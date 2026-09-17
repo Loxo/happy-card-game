@@ -35,8 +35,9 @@ flowchart TD
   D --> E[Active player's turn starts: engine auto-draws 1 card for them]
   E --> F[Player sends TakeTurnAction: play / discard / use-malus]
   F --> G{action}
-  G -- play --> H[tableRules checks cap, exclusion, requires - considering active bypass cards]
-  H --> H1{upgrades an existing table card?}
+  G -- play --> H0[resolveUpgrade: does this card upgrade one already on the table?]
+  H0 --> H[canPlayCard checks cap, exclusion, requires - excluding any upgrade target, considering active bypass cards]
+  H --> H1{upgrade target found earlier?}
   H1 -- yes --> H2[Old card removed/discarded, new card replaces it]
   H1 -- no --> H3[New card added to table]
   G -- discard --> I[Card removed from hand or from own table]
@@ -91,17 +92,18 @@ journey
 ### `1)` Deck and state
 
 1. `game/deck.ts`: build and shuffle a deck from `BASE_CARD_SET` (any size), draw, and reshuffle-discard-into-deck when empty.
-2. `game/state.ts`: per-room game state — hands (server-side, full; broadcast strips other players' hands to a count), each player's `table: CardInstance[]`, the shared played-cards row (this turn's action, for display), discard pile, turn order index, `roundsRemaining` (from a fixed `MAX_ROUNDS` constant).
+2. `game/state.ts`: per-room game state — hands (server-side, full; broadcast strips other players' hands to a count), each player's `table: CardInstance[]`, the shared played-cards row as `{ playerId, card }` entries (attributed per seat, per `shared`'s `PlayedCardEntry`), discard pile, turn order index, `roundsRemaining` (from a fixed `MAX_ROUNDS` constant).
 
 ### `2)` Table rules
 
 > The constraint checker every `'play'` action goes through before it's accepted.
 
-1. `game/tableRules.ts`: `canPlayCard(playerTable, card)` — resolves the active bypass set first (union of `bypassExclusion`/`bypassCap` from every card currently on the player's table), then checks:
-   - Cap: count cards already on the table in `card.category`; reject if at/over `card.maxOnTable`, unless that category is in the active bypass-cap set.
-   - Exclusion: reject if any of `card.excludedBy` is present on the table, unless that category is in the active bypass-exclusion set.
+1. `resolveUpgrade(playerTable, card)` — if `card.upgrades` names a category or id present on the table, returns the old card that would be removed (discarded, replaced entirely — confirmed, not stacked). Runs first because `canPlayCard` needs its result.
+2. `game/tableRules.ts`: `canPlayCard(playerTable, card, upgradeTarget?)` — resolves the active bypass set first (union of `bypassExclusion`/`bypassCap` from every card currently on the player's table), then checks against the table **with `upgradeTarget` excluded** (a card upgrading its own category must not be blocked by the cap slot it is about to free):
+   - Cap: count cards already on the table in `card.category` (excluding `upgradeTarget`); reject if at/over `card.maxOnTable`, unless that category is in the active bypass-cap set.
+   - Exclusion: reject if any of `card.excludedBy` is present on the table (excluding `upgradeTarget`), unless that category is in the active bypass-exclusion set.
    - Prerequisite: reject if any of `card.requires` is absent from the table.
-2. `resolveUpgrade(playerTable, card)` — if `card.upgrades` names a category/id present on the table, returns the old card to remove (discarded, replaced entirely — confirmed, not stacked).
+   - This ordering matters: a card that both upgrades and shares a capped category with its own target (e.g. a senior-role card upgrading a junior one in the same `maxOnTable: 1` category) must remain playable — `canPlayCard` evaluates the table as it will be *after* the upgrade removal, not before.
 
 ### `3)` Scoring
 
@@ -113,18 +115,18 @@ journey
 2. On a turn starting, auto-draw 1 card for the active player (hand becomes 6) before accepting any action.
 3. `takeTurnAction(playerId, cardId, action, { source, targetPlayerId })`:
    - Rejects if it isn't `playerId`'s turn.
-   - `'play'`: `cardId` must be in hand; run `canPlayCard`, reject with the specific reason if it fails; apply `resolveUpgrade` first when it applies; add the card to the table; remove it from hand.
+   - `'play'`: `cardId` must be in hand; call `resolveUpgrade` to find the (possibly absent) upgrade target; run `canPlayCard` with that target excluded, reject with the specific reason if it fails; remove the upgrade target from the table when present (discarded); add the card to the table; remove it from hand.
    - `'discard'`: from `source` (`'hand'` default, or `'table'`), remove the card from there; no other side effect.
    - `'malus'`: requires `targetPlayerId`; reject if missing, invalid, or the card holds no `effect`; resolve the `CardEffectKind` against the target; discard the card.
    - After any of the three, recompute the acting player's resources via `computeResources`, confirm hand is back to 5, advance the turn.
 4. After each completed turn, decrement `roundsRemaining` once every player has gone; end the game when it hits 0, or immediately if the deck is empty and every hand is empty.
-5. On end, rank players by their live `happiness` resource and mark the state finished with that result.
+5. On end, rank every player by their live `happiness` resource into the `GameState.result.rankings` field (shared/protocol) and mark the state finished.
 
 ### `5)` Wire into room + router
 
 1. `Room` holds an engine instance once `StartGame` is received.
 2. `router.ts` handles `StartGame` and `TakeTurnAction`, replying `ActionRejected` (naming the specific rule broken: cap, exclusion, prerequisite, wrong turn, unknown card, missing target) for anything the engine reports.
-3. On every accepted action (including the automatic turn-start draw), broadcast each player their own `GameState`, including their live `resources` and `table`.
+3. On every accepted action (including the automatic turn-start draw), broadcast each player their own `GameState`, including their live `resources`, their `table`, and an `opponents` array (each other seated player's `handCount`, public `table`, and `resources` — never their hand contents).
 
 ### `6)` Tests
 

@@ -1,8 +1,10 @@
 /**
- * Placeholder export for the `shared` package.
- *
- * Real WS protocol and card-type definitions land in phase 2. This exists
- * so `server` has something concrete to import today, proving the
- * workspace wiring works end to end.
+ * Placeholder export from phase 1, kept so `server`'s existing import
+ * keeps working. Real content lives in `protocol/*` and `cards/*` below.
  */
 export const SHARED_PACKAGE_NAME = '@happy-card-game/shared';
+
+export * from './protocol/messages.js';
+export * from './protocol/guards.js';
+export * from './cards/card.js';
+export * from './cards/baseSet.js';

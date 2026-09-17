@@ -12,6 +12,7 @@
   "private": true,
   "packageManager": "pnpm@11.23.0",
   "dependencies": {
+    "@happy-card-game/shared": "workspace:*",
     "@angular/common": "^22.0.0",
     "@angular/compiler": "^22.0.0",
     "@angular/core": "^22.0.0",

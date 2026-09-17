@@ -1,5 +1,5 @@
 ---
-status: pending
+status: done
 ---
 
 # Instruction: Shared protocol & card model
@@ -59,9 +59,12 @@ journey
    - The server auto-draws for the active player at turn start; drawing is never a client-initiated message.
    - `source` is only meaningful when `action` is `'discard'` (defaults to `'hand'`) — a player may discard from their own table, not just their hand.
    - `targetPlayerId` is only meaningful when `action` is `'malus'`.
-2. Define server→client messages: `RoomState { code, players, hostId }`, `GameState { hand, table, playedCards, turnPlayerId, roundsRemaining, deckCount, resources }`, `ActionRejected { reason }`, `Error { message }`.
-   - `table` is per-player: each player's own array of active `CardInstance`s (what's currently placed, after any upgrade replacements or table discards).
+2. Define server→client messages: `RoomState { code, players, hostId }`, `GameState { hand, table, playedCards, turnPlayerId, roundsRemaining, deckCount, resources, opponents, result? }`, `ActionRejected { reason }`, `Error { message }`.
+   - `table` is per-player: each player's own array of active `CardInstance`s (what's currently placed, after any upgrade replacements or table discards). A `CardInstance { instanceId, definitionId }` is one physical copy — `instanceId` is what protocol actions target, `definitionId` references a `CardDefinition.id`. Named distinctly (not `cardId` on both) so it's never confused with `TakeTurnAction.cardId`, which targets an `instanceId`.
    - `resources` is a live total per player per resource kind, always derived from what is currently on their table — never a one-way banked counter, since a table discard or an upgrade replacement removes a card's contribution.
+   - `opponents`: every other seated player's public state — `{ playerId, handCount, table, resources }`. Never their hand contents, since only counts are public per the wireframe; their table and resources are public to everyone.
+   - `result?`: present only once the game has ended — `{ rankings: { playerId, happiness }[] }`.
+   - `playedCards`: an array of `{ playerId, card: CardInstance }` — attributed per seat, not a bare `CardInstance[]`, so the client can render each played card in the right seat's slot (phase 6's played-cards row).
 3. Export a `ClientToServerMessage` and `ServerToClientMessage` union type.
 
 ### `2)` Type guards
@@ -90,11 +93,18 @@ journey
 
 1. Update `shared/src/index.ts` to re-export `protocol/*` and `cards/*`.
 
+### `5)` Wire the client dependency
+
+> Row 4 of the acceptance table requires the import to actually resolve for `client`, not just `server` — this phase owns that wiring; no later phase does.
+
+1. Add `@happy-card-game/shared` as a `workspace:*` dependency in `client/package.json`, `pnpm install`.
+2. Confirm a throwaway import type-checks against `client/tsconfig.app.json` (the real app build config — the root `client/tsconfig.json` has `"files": []` and checks nothing on its own), then remove the throwaway file. Actual usage of these types is phase 5's job; this task only proves the wiring works.
+
 ## Test acceptance criteria
 
 | Task | Acceptance criteria                                                                |
 | ---- | -------------------------------------------------------------------------------------- |
 | 1... | Every message interface compiles and is included in its direction's union type         |
 | 2... | Each type guard, run against a valid sample of its own message, returns `true`          |
-| 3... | `BASE_CARD_SET` has no duplicate `id`; every entry with an `effect` uses a known `CardEffectKind`; every `requires`/`excludedBy`/`upgrades`/`bypassExclusion`/`bypassCap` entry names a category that exists in the set |
+| 3... | `BASE_CARD_SET` has no duplicate `id`; every entry with an `effect` uses a known `CardEffectKind`; every `requires`/`excludedBy`/`bypassExclusion`/`bypassCap` entry names a category that exists in the set, and every `upgrades` entry names a category **or** id that exists in the set |
 | 4... | Both `client` and `server` can `import { ... } from '@happy-card-game/shared'` with no type error |
