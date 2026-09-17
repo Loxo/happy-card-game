@@ -55,9 +55,10 @@ journey
 
 > One discriminated union per direction, `type` as the tag.
 
-1. Define client→server messages in `protocol/messages.ts`: `CreateRoom`, `JoinRoom { code }`, `StartGame`, `TakeTurnAction { cardId, action: 'play' | 'discard' | 'malus', source?: 'hand' | 'table', targetPlayerId?: string }`, `LeaveRoom`.
+1. Define client→server messages in `protocol/messages.ts`: `CreateRoom`, `JoinRoom { code }`, `StartGame`, `TakeTurnAction { cardId, action: 'play' | 'discard' | 'malus', source?: 'hand' | 'table', handCardId?: string, targetPlayerId?: string }`, `LeaveRoom`.
    - The server auto-draws for the active player at turn start; drawing is never a client-initiated message.
    - `source` is only meaningful when `action` is `'discard'` (defaults to `'hand'`) — a player may discard from their own table, not just their hand.
+   - `handCardId`: **required** when `action` is `'discard'` and `source` is `'table'` — confirmed rule: a table-discard is a combo, the named table card AND this hand card are discarded together in the same action, atomically. This is what keeps "hand always ends the turn at 5" true even for a table-discard (nothing else about the turn removes a card from hand in that case). Absent/invalid `handCardId` on a table-discard is a full rejection, no partial state change.
    - `targetPlayerId` is only meaningful when `action` is `'malus'`.
 2. Define server→client messages: `RoomState { code, players, hostId }`, `GameState { hand, table, playedCards, turnPlayerId, roundsRemaining, deckCount, resources, opponents, result? }`, `ActionRejected { reason }`, `Error { message }`.
    - `table` is per-player: each player's own array of active `CardInstance`s (what's currently placed, after any upgrade replacements or table discards). A `CardInstance { instanceId, definitionId }` is one physical copy — `instanceId` is what protocol actions target, `definitionId` references a `CardDefinition.id`. Named distinctly (not `cardId` on both) so it's never confused with `TakeTurnAction.cardId`, which targets an `instanceId`.

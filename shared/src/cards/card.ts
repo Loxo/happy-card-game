@@ -14,9 +14,14 @@
 
 /**
  * The resource kinds a card can contribute while on a player's table.
- * Extend this union (not the engine) to add a new resource.
+ * Extend this union (not the engine) to add a new resource. Keep
+ * `RESOURCE_KINDS` in sync — it's the runtime list consumers iterate
+ * instead of re-declaring their own copy that could drift.
  */
 export type ResourceKind = 'happiness' | 'education' | 'money';
+
+/** Every known `ResourceKind`, for iteration and runtime validation. */
+export const RESOURCE_KINDS: readonly ResourceKind[] = ['happiness', 'education', 'money'];
 
 /**
  * Instant, one-off malus effects. Resolved against a target player and then

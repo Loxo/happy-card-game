@@ -34,11 +34,17 @@ const validTakeTurnActionPlay: TakeTurnActionMessage = {
   cardId: 'instance-1',
   action: 'play',
 };
-const validTakeTurnActionDiscard: TakeTurnActionMessage = {
+const validTakeTurnActionDiscardHand: TakeTurnActionMessage = {
+  type: 'TakeTurnAction',
+  cardId: 'instance-1',
+  action: 'discard',
+};
+const validTakeTurnActionDiscardTable: TakeTurnActionMessage = {
   type: 'TakeTurnAction',
   cardId: 'instance-1',
   action: 'discard',
   source: 'table',
+  handCardId: 'instance-2',
 };
 const validTakeTurnActionMalus: TakeTurnActionMessage = {
   type: 'TakeTurnAction',
@@ -102,10 +108,17 @@ describe('client -> server guards', () => {
     expect(isStartGame(validStartGame)).toBe(true);
   });
 
-  it('isTakeTurnAction accepts play / discard / malus variants', () => {
+  it('isTakeTurnAction accepts play / discard (hand and table combo) / malus variants', () => {
     expect(isTakeTurnAction(validTakeTurnActionPlay)).toBe(true);
-    expect(isTakeTurnAction(validTakeTurnActionDiscard)).toBe(true);
+    expect(isTakeTurnAction(validTakeTurnActionDiscardHand)).toBe(true);
+    expect(isTakeTurnAction(validTakeTurnActionDiscardTable)).toBe(true);
     expect(isTakeTurnAction(validTakeTurnActionMalus)).toBe(true);
+  });
+
+  it('isTakeTurnAction accepts a table-discard with no handCardId (the engine, not the wire guard, enforces it is required) but rejects a non-string one', () => {
+    const { handCardId: _omit, ...withoutHandCardId } = validTakeTurnActionDiscardTable;
+    expect(isTakeTurnAction(withoutHandCardId)).toBe(true);
+    expect(isTakeTurnAction({ ...validTakeTurnActionDiscardTable, handCardId: 42 })).toBe(false);
   });
 
   it('isLeaveRoom accepts a valid LeaveRoom message', () => {
@@ -179,6 +192,7 @@ describe('malformed input never throws and is rejected', () => {
     { type: 'JoinRoom' }, // missing code
     { type: 'TakeTurnAction', cardId: 'x', action: 'fly' }, // invalid action
     { type: 'TakeTurnAction', cardId: 'x', action: 'discard', source: 'pocket' },
+    { type: 'TakeTurnAction', cardId: 'x', action: 'discard', source: 'table', handCardId: 42 },
     { type: 'RoomState', code: 'ABCD', players: [1, 2], hostId: 'p1' },
     { type: 'GameState' },
     { type: 'ActionRejected' },

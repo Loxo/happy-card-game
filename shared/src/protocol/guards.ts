@@ -1,4 +1,4 @@
-import type { CardInstance, ResourceKind } from '../cards/card.js';
+import { RESOURCE_KINDS, type CardInstance, type ResourceKind } from '../cards/card.js';
 import type {
   ActionRejectedMessage,
   CardSource,
@@ -65,6 +65,14 @@ export function isTakeTurnAction(value: unknown): value is TakeTurnActionMessage
   if (value['source'] !== undefined && !CARD_SOURCES.includes(value['source'] as CardSource)) {
     return false;
   }
+  // `handCardId` is required for a table-discard combo, but that's an
+  // engine-level rule (rejected as `ActionRejected` with a specific
+  // reason), not a wire-shape rule — a guard-level rejection would surface
+  // as a generic `Error` instead. The guard only validates the type when
+  // the field is present.
+  if (value['handCardId'] !== undefined && typeof value['handCardId'] !== 'string') {
+    return false;
+  }
   if (value['targetPlayerId'] !== undefined && typeof value['targetPlayerId'] !== 'string') {
     return false;
   }
@@ -99,8 +107,6 @@ export function isRoomState(value: unknown): value is RoomStateMessage {
     typeof value['hostId'] === 'string'
   );
 }
-
-const RESOURCE_KINDS: readonly ResourceKind[] = ['happiness', 'education', 'money'];
 
 function isCardInstance(value: unknown): value is CardInstance {
   return (

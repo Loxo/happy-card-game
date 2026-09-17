@@ -1,5 +1,6 @@
 import { WebSocket } from 'ws';
 import type { RoomStateMessage, ServerToClientMessage } from '@happy-card-game/shared';
+import type { GameEngine } from '../game/engine.js';
 
 /** Hard cap enforced by `Room.addPlayer` — the ruleset is 2-4 players. */
 export const MAX_PLAYERS = 4;
@@ -9,13 +10,15 @@ export const MAX_PLAYERS = 4;
  * of every seated player. No persistence — per the architecture decision,
  * a server restart drops every in-progress room.
  *
- * Phase 4 will add an optional `GameEngine` instance here once `StartGame`
- * is handled; this phase only manages the roster.
+ * Holds an optional `GameEngine` instance once `StartGame` is handled
+ * (phase 4); `undefined` before that.
  */
 export class Room {
   readonly code: string;
   /** The current host. Reassigned to a remaining player if the host leaves. */
   hostId: string;
+  /** Set by the router once `StartGame` is received; `undefined` before that. */
+  engine: GameEngine | undefined;
 
   private readonly players = new Map<string, WebSocket>();
 
@@ -73,6 +76,14 @@ export class Room {
       if (ws.readyState === WebSocket.OPEN) {
         ws.send(payload);
       }
+    }
+  }
+
+  /** Sends `message` to one seated player only — used for per-recipient `GameState` payloads, which differ per player (own hand, opponents stripped to summaries). */
+  sendTo(playerId: string, message: ServerToClientMessage): void {
+    const ws = this.players.get(playerId);
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify(message));
     }
   }
 }

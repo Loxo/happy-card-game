@@ -40,6 +40,19 @@ export interface TakeTurnActionMessage {
   action: TurnActionKind;
   /** Only meaningful when `action` is `'discard'`. Defaults to `'hand'`. */
   source?: CardSource;
+  /**
+   * Required when `action` is `'discard'` and `source` is `'table'`: a
+   * table-discard is a combo — `cardId` (on the table) and this hand card
+   * are discarded together, atomically. This is what keeps "hand always
+   * ends the turn at 5" true even here, since nothing else about a
+   * table-discard removes a card from hand.
+   *
+   * Enforced by the engine (`ActionRejected` with reason
+   * `missing-hand-card`), not by the wire-shape guard — a guard-level
+   * rejection would surface as a generic `Error` instead of naming the
+   * specific rule broken.
+   */
+  handCardId?: string;
   /** Only meaningful when `action` is `'malus'`. */
   targetPlayerId?: string;
 }
