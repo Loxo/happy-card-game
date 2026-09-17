@@ -1,10 +1,13 @@
 import { WebSocketServer } from 'ws';
 import { SHARED_PACKAGE_NAME } from '@happy-card-game/shared';
+import { RoomManager } from './rooms/roomManager.js';
+import { handleConnection } from './ws/connection.js';
 
 const PORT = Number(process.env.PORT ?? 8080);
 
 export function createServer(port: number = PORT): WebSocketServer {
   const wss = new WebSocketServer({ port });
+  const roomManager = new RoomManager();
 
   wss.once('listening', () => {
     const address = wss.address();
@@ -12,6 +15,10 @@ export function createServer(port: number = PORT): WebSocketServer {
     console.log(
       `[${SHARED_PACKAGE_NAME}] server listening on port ${boundPort}`,
     );
+  });
+
+  wss.on('connection', (ws) => {
+    handleConnection(roomManager, ws);
   });
 
   return wss;
