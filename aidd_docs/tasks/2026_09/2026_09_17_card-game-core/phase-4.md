@@ -1,0 +1,142 @@
+---
+status: pending
+---
+
+# Instruction: Server authoritative game engine
+
+## Architecture projection
+
+> Tree of the final files. ✅ create · ✏️ modify · ❌ delete
+
+```txt
+.
+└── server/
+    └── src/
+        ├── game/
+        │   ├── engine.ts          ✅
+        │   ├── deck.ts             ✅
+        │   ├── tableRules.ts        ✅
+        │   ├── scoring.ts            ✅
+        │   ├── state.ts               ✅
+        │   └── engine.test.ts          ✅ (vitest)
+        ├── rooms/
+        │   └── room.ts              ✏️ (holds a GameEngine once started)
+        └── ws/
+            └── router.ts            ✏️ (handles StartGame, TakeTurnAction)
+```
+
+## User Journey
+
+```mermaid
+flowchart TD
+  A[Room has 2-4 players] --> B[Host sends StartGame]
+  B --> C[Engine shuffles deck, deals 5-card hands]
+  C --> D[Broadcasts per-player GameState: own hand, own table, round count, live resources]
+  D --> E[Active player's turn starts: engine auto-draws 1 card for them]
+  E --> F[Player sends TakeTurnAction: play / discard / use-malus]
+  F --> G{action}
+  G -- play --> H[tableRules checks cap, exclusion, requires - considering active bypass cards]
+  H --> H1{upgrades an existing table card?}
+  H1 -- yes --> H2[Old card removed/discarded, new card replaces it]
+  H1 -- no --> H3[New card added to table]
+  G -- discard --> I[Card removed from hand or from own table]
+  G -- malus --> J[CardEffectKind resolves against targetPlayerId, card discarded]
+  H2 --> K[Resources recomputed live from current table]
+  H3 --> K
+  I --> K
+  J --> K
+  K --> L[Hand back to 5, turn advances]
+  L --> M{Round limit reached, or deck empty and every hand empty?}
+  M -- no --> D
+  M -- yes --> N[Broadcasts game-over ranked by happiness]
+```
+
+## Test Scope
+
+```mermaid
+---
+title: Test scope
+---
+journey
+  section Setup
+    A room has 2-4 connected players => ready to start: 5: system
+  section Happy path
+    Host sends StartGame => every player receives their own 5-card hand, an empty table, and a round count: 5: api
+    A new turn begins => the active player's hand grows to 6 from the auto-draw: 5: system
+    Active player plays a resource card with no constraints => it appears on their table, their live resources update, hand returns to 5: 5: api
+    Active player plays a card that upgrades one already on their table => the old card is discarded, the new one replaces it, resources recompute from the new card only: 5: api
+    Active player discards a card from their own table => it leaves the table, live resources drop accordingly, hand stays untouched: 5: api
+    Active player sends action 'malus' with a targetPlayerId => the CardEffectKind resolves against that target, the malus card is discarded: 5: api
+    The round limit is reached, or the deck is empty and every hand is empty => all players receive a game-over GameState ranked by happiness: 5: api
+  section Edge case - category cap
+    Active player tries to play a 6th card in a category capped at 5 with no active bypass => receives ActionRejected: 1: api
+  section Edge case - exclusion blocked
+    Active player tries to play a card excluded by a category already on their table, with no active bypass => receives ActionRejected: 1: api
+  section Edge case - exclusion bypassed
+    The same play succeeds once a bypass card for that category is active on their table: 1: api
+  section Edge case - missing prerequisite
+    Active player tries to play a card whose `requires` category is absent from their table => receives ActionRejected: 1: api
+  section Edge case - play out of turn or unknown card
+    A non-active player acts, or references a card not in their hand/table, => receives ActionRejected, state unchanged: 1: api
+  section Edge case - deck exhausted mid-draw
+    The turn-start auto-draw is required and the deck is empty => the discard pile reshuffles into a new deck before the draw completes: 1: system
+```
+
+## Wireframe
+
+<!-- No UI in this phase. -->
+
+## Tasks to do
+
+### `1)` Deck and state
+
+1. `game/deck.ts`: build and shuffle a deck from `BASE_CARD_SET` (any size), draw, and reshuffle-discard-into-deck when empty.
+2. `game/state.ts`: per-room game state — hands (server-side, full; broadcast strips other players' hands to a count), each player's `table: CardInstance[]`, the shared played-cards row (this turn's action, for display), discard pile, turn order index, `roundsRemaining` (from a fixed `MAX_ROUNDS` constant).
+
+### `2)` Table rules
+
+> The constraint checker every `'play'` action goes through before it's accepted.
+
+1. `game/tableRules.ts`: `canPlayCard(playerTable, card)` — resolves the active bypass set first (union of `bypassExclusion`/`bypassCap` from every card currently on the player's table), then checks:
+   - Cap: count cards already on the table in `card.category`; reject if at/over `card.maxOnTable`, unless that category is in the active bypass-cap set.
+   - Exclusion: reject if any of `card.excludedBy` is present on the table, unless that category is in the active bypass-exclusion set.
+   - Prerequisite: reject if any of `card.requires` is absent from the table.
+2. `resolveUpgrade(playerTable, card)` — if `card.upgrades` names a category/id present on the table, returns the old card to remove (discarded, replaced entirely — confirmed, not stacked).
+
+### `3)` Scoring
+
+1. `game/scoring.ts`: `computeResources(playerTable)` sums every `ResourceKind` across the player's current table — always derived live, recomputed after every play, upgrade-replacement, or table discard. Never a one-way banked counter.
+
+### `4)` Engine — turn cycle
+
+1. `game/engine.ts`: `startGame(players)` shuffles the deck, deals 5-card hands, sets turn order and `roundsRemaining`.
+2. On a turn starting, auto-draw 1 card for the active player (hand becomes 6) before accepting any action.
+3. `takeTurnAction(playerId, cardId, action, { source, targetPlayerId })`:
+   - Rejects if it isn't `playerId`'s turn.
+   - `'play'`: `cardId` must be in hand; run `canPlayCard`, reject with the specific reason if it fails; apply `resolveUpgrade` first when it applies; add the card to the table; remove it from hand.
+   - `'discard'`: from `source` (`'hand'` default, or `'table'`), remove the card from there; no other side effect.
+   - `'malus'`: requires `targetPlayerId`; reject if missing, invalid, or the card holds no `effect`; resolve the `CardEffectKind` against the target; discard the card.
+   - After any of the three, recompute the acting player's resources via `computeResources`, confirm hand is back to 5, advance the turn.
+4. After each completed turn, decrement `roundsRemaining` once every player has gone; end the game when it hits 0, or immediately if the deck is empty and every hand is empty.
+5. On end, rank players by their live `happiness` resource and mark the state finished with that result.
+
+### `5)` Wire into room + router
+
+1. `Room` holds an engine instance once `StartGame` is received.
+2. `router.ts` handles `StartGame` and `TakeTurnAction`, replying `ActionRejected` (naming the specific rule broken: cap, exclusion, prerequisite, wrong turn, unknown card, missing target) for anything the engine reports.
+3. On every accepted action (including the automatic turn-start draw), broadcast each player their own `GameState`, including their live `resources` and `table`.
+
+### `6)` Tests
+
+1. `game/engine.test.ts` (Vitest): cover the happy-path turn cycle, an upgrade replacement, a table discard, both end conditions, and every edge case from the Test Scope above (cap, exclusion, exclusion-bypassed, missing prerequisite, wrong turn/unknown card, deck reshuffle).
+
+## Test acceptance criteria
+
+| Task | Acceptance criteria                                                                                             |
+| ---- | --------------------------------------------------------------------------------------------------------------------- |
+| 1... | Drawing from an empty deck reshuffles the discard pile and succeeds instead of failing                                 |
+| 2... | `canPlayCard` rejects a capped or excluded play with no active bypass, and accepts the same play once a matching bypass card is on the table |
+| 3... | `computeResources` reflects exactly the cards currently on the table — a table discard or upgrade-replacement changes it on the next call |
+| 4... | Playing an upgrade card removes the old card's contribution entirely and leaves only the new card's; every accepted action leaves the acting player's hand at exactly 5 cards |
+| 5... | Every rejection names a specific reason (cap / exclusion / prerequisite / turn / unknown card / missing target), and rejections change no state |
+| 6... | `pnpm --filter server test` passes, covering the happy path, both end conditions, and every edge case above             |
