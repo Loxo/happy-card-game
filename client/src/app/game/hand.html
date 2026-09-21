@@ -1,0 +1,34 @@
+<div class="hand">
+  @if (pairingForTableDiscard()) {
+    <p class="hint">Choose a hand card to discard along with it.</p>
+  }
+  @for (view of views(); track view.card.instanceId) {
+    <div class="slot">
+      <button
+        type="button"
+        class="card"
+        [class.selected]="selectedCardId() === view.card.instanceId"
+        [disabled]="disabled()"
+        (click)="onCardClick(view)"
+      >
+        <span class="card-name">{{ view.name }}</span>
+        <span class="card-category">{{ view.category }}</span>
+      </button>
+
+      @if (selectedCardId() === view.card.instanceId && !pairingForTableDiscard()) {
+        <div class="menu">
+          <button type="button" class="btn-outline" [disabled]="!view.canPlay" (click)="onPlay(view)">
+            Play
+          </button>
+          @if (!view.canPlay) {
+            <p class="reason">{{ view.playBlockedReason }}</p>
+          }
+          <button type="button" class="btn-outline" (click)="onDiscard(view)">Discard</button>
+          @if (view.hasMalusEffect) {
+            <button type="button" class="btn-outline" (click)="onUseMalus(view)">Use malus</button>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

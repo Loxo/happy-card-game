@@ -1,0 +1,74 @@
+@if (gameState(); as state) {
+  <main class="board">
+    <div class="opponents">
+      @for (seat of seatedOpponents(); track seat.opponent.playerId) {
+        <app-opponent-seat
+          [opponent]="seat.opponent"
+          [seatLabel]="seat.seatLabel"
+          [position]="seat.position"
+          [isTurn]="state.turnPlayerId === seat.opponent.playerId"
+          [connected]="seat.connected"
+          [selectable]="pickingMalusTarget()"
+          (pick)="onSeatPick($event)"
+        />
+      }
+    </div>
+
+    <app-table [deckCount]="state.deckCount" />
+
+    <div class="played-row">
+      @for (entry of displayPlayedCards(); track entry.playerId) {
+        <div class="played-slot">
+          <span class="played-label">{{ seatLabelFor(entry.playerId) }}</span>
+          <span class="played-card">{{ definitionName(entry.card) }}</span>
+        </div>
+      }
+    </div>
+
+    <div class="status">
+      <p class="status-line">
+        {{ turnStatus() }}
+        {{ state.roundsRemaining }} round{{ state.roundsRemaining === 1 ? '' : 's' }} left.
+      </p>
+      <p class="resources">
+        @for (kind of resourceKinds; track kind) {
+          <span>{{ kind }}: {{ state.resources[kind] }}</span>
+        }
+      </p>
+      @if (rejectedReason()) {
+        <p class="error" role="alert">{{ rejectedReason() }}</p>
+      }
+      @if (selection()) {
+        <button type="button" class="btn-outline" (click)="cancelSelection()">Cancel</button>
+      }
+    </div>
+
+    @if (state.result) {
+      <div class="game-over">
+        <h2>Final results</h2>
+        <ol>
+          @for (ranking of rankings(); track ranking.playerId) {
+            <li>{{ ranking.label }} — {{ ranking.happiness }} happiness</li>
+          }
+        </ol>
+      </div>
+    }
+
+    <app-tableau
+      [cards]="displayTable()"
+      [disabled]="interactionDisabled()"
+      (discard)="onTableauDiscard($event)"
+    />
+
+    <app-hand
+      [cards]="displayHand()"
+      [table]="displayTable()"
+      [disabled]="interactionDisabled() || pickingMalusTarget()"
+      [pairingForTableDiscard]="pickingTableDiscardPair()"
+      (play)="onPlay($event)"
+      (discardFromHand)="onDiscardFromHand($event)"
+      (useMalus)="onUseMalus($event)"
+      (pairForTableDiscard)="onPairForTableDiscard($event)"
+    />
+  </main>
+}
