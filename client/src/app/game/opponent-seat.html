@@ -1,0 +1,32 @@
+<button
+  type="button"
+  class="seat"
+  [class.pos-top]="position() === 'top'"
+  [class.pos-left]="position() === 'left'"
+  [class.pos-right]="position() === 'right'"
+  [class.is-turn]="isTurn()"
+  [class.disconnected]="!connected()"
+  [class.selectable]="selectable()"
+  [disabled]="!selectable()"
+  (click)="onClick()"
+>
+  <div class="seat-head">
+    <span class="seat-label">{{ seatLabel() }}</span>
+    @if (isTurn()) {
+      <span class="turn-dot" aria-label="current turn"></span>
+    }
+    @if (!connected()) {
+      <span class="badge badge-disconnected">disconnected</span>
+    }
+  </div>
+
+  <div class="hand-count">{{ opponent().handCount }} card{{ opponent().handCount === 1 ? '' : 's' }} in hand</div>
+
+  @if (tableauSummary().length > 0) {
+    <ul class="mini-tableau">
+      @for (entry of tableauSummary(); track entry.category) {
+        <li>{{ entry.category }} × {{ entry.count }}</li>
+      }
+    </ul>
+  }
+</button>

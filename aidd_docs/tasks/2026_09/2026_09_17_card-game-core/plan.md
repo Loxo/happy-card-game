@@ -1,6 +1,6 @@
 ---
 objective: "A working happy-card-game MVP: 2-4 players join a room via invite link, play the full ruleset on a server-authoritative Node+ws backend, rendered by an Angular SPA with optimistic updates and rollback."
-status: pending
+status: implemented
 ---
 
 # Plan: Card game core (MVP)

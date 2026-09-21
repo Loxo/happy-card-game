@@ -1,0 +1,95 @@
+.hand {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.hint {
+  flex-basis: 100%;
+  margin: 0 0 0.25rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.slot {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  width: 100px;
+  padding: 0.75rem 0.6rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  font-family: var(--font-body);
+  text-align: left;
+  cursor: pointer;
+}
+
+.card:hover:not(:disabled) {
+  border-color: var(--color-primary);
+}
+
+.card.selected {
+  border-color: var(--color-primary);
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.card:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.card-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.card-category {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-ink-muted);
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  width: 100px;
+}
+
+.menu .btn-outline {
+  padding: 0.35rem 0.5rem;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.75rem;
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--color-primary);
+  cursor: pointer;
+}
+
+.menu .btn-outline:disabled {
+  border-color: var(--color-border-strong);
+  color: var(--color-ink-muted);
+  cursor: not-allowed;
+}
+
+.reason {
+  margin: 0;
+  font-size: 0.65rem;
+  color: var(--color-danger);
+}

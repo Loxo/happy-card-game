@@ -1,0 +1,36 @@
+<main class="home">
+  <h1>Happy Card Game</h1>
+  <p class="tagline">2-4 players, one link, no accounts.</p>
+
+  <section class="card">
+    <h2>Start a room</h2>
+    <button type="button" class="btn btn-primary" (click)="createRoom()" [disabled]="status() === 'connecting'">
+      Create room
+    </button>
+  </section>
+
+  <section class="card">
+    <h2>Join a room</h2>
+    <form (ngSubmit)="joinRoom()">
+      <label for="join-code" class="visually-hidden">Room code</label>
+      <input
+        id="join-code"
+        type="text"
+        placeholder="ROOM CODE"
+        maxlength="5"
+        [ngModel]="joinCode()"
+        (ngModelChange)="joinCode.set($event)"
+        name="joinCode"
+        autocomplete="off"
+        autocapitalize="characters"
+      />
+      <button type="submit" class="btn btn-outline" [disabled]="status() === 'connecting' || !joinCode().trim()">
+        Join
+      </button>
+    </form>
+  </section>
+
+  @if (rejectedReason()) {
+    <p class="error" role="alert">{{ rejectedReason() }}</p>
+  }
+</main>

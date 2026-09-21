@@ -1,0 +1,11 @@
+{
+  "name": "happy-card-game",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev:server": "pnpm --filter @happy-card-game/server dev",
+    "dev:client": "pnpm --filter client start",
+    "test": "pnpm -r test"
+  }
+}
