@@ -104,7 +104,8 @@ export function isRoomState(value: unknown): value is RoomStateMessage {
     typeof value['code'] === 'string' &&
     Array.isArray(value['players']) &&
     value['players'].every((player) => typeof player === 'string') &&
-    typeof value['hostId'] === 'string'
+    typeof value['hostId'] === 'string' &&
+    typeof value['yourPlayerId'] === 'string'
   );
 }
 

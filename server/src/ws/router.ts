@@ -77,7 +77,7 @@ export function routeMessage(
       }
       const room = roomManager.createRoom(state.playerId, ws);
       state.roomCode = room.code;
-      room.broadcast(room.toRoomState());
+      room.broadcastRoomState();
       return;
     }
 
@@ -92,7 +92,7 @@ export function routeMessage(
         return;
       }
       state.roomCode = result.room.code;
-      result.room.broadcast(result.room.toRoomState());
+      result.room.broadcastRoomState();
       return;
     }
 
@@ -104,7 +104,7 @@ export function routeMessage(
       const removed = roomManager.removeConnection(ws);
       state.roomCode = null;
       if (removed && !removed.room.isEmpty()) {
-        removed.room.broadcast(removed.room.toRoomState());
+        removed.room.broadcastRoomState();
       }
       return;
     }

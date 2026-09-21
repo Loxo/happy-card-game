@@ -60,12 +60,14 @@ export class Room {
     return this.players.size === 0;
   }
 
-  toRoomState(): RoomStateMessage {
+  /** `yourPlayerId` differs per recipient, so this is stamped per-call, never reused across sockets. */
+  toRoomState(yourPlayerId: string): RoomStateMessage {
     return {
       type: 'RoomState',
       code: this.code,
       players: this.playerIds,
       hostId: this.hostId,
+      yourPlayerId,
     };
   }
 
@@ -76,6 +78,13 @@ export class Room {
       if (ws.readyState === WebSocket.OPEN) {
         ws.send(payload);
       }
+    }
+  }
+
+  /** Sends every seated player their own `RoomState`, stamped with their own `yourPlayerId`. */
+  broadcastRoomState(): void {
+    for (const playerId of this.playerIds) {
+      this.sendTo(playerId, this.toRoomState(playerId));
     }
   }
 

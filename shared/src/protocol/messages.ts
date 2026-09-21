@@ -78,6 +78,12 @@ export interface RoomStateMessage {
   /** Ids of every player currently in the room. */
   players: string[];
   hostId: string;
+  /**
+   * The id of the connection this message was sent to — sent per-recipient
+   * (never broadcast verbatim) so each client can tell which entry in
+   * `players` is itself without the protocol carrying display names.
+   */
+  yourPlayerId: string;
 }
 
 /**

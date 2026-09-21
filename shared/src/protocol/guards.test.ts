@@ -59,6 +59,7 @@ const validRoomState: RoomStateMessage = {
   code: 'ABCD',
   players: ['player-1', 'player-2'],
   hostId: 'player-1',
+  yourPlayerId: 'player-1',
 };
 const validGameState: GameStateMessage = {
   type: 'GameState',

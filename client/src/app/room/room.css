@@ -1,0 +1,139 @@
+.room {
+  max-width: 440px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--color-primary);
+}
+
+.hint {
+  margin: 0;
+  color: var(--color-ink-muted);
+}
+
+.roster {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.roster li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.9rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-radius: 999px;
+  padding: 0.1rem 0.6rem;
+}
+
+.badge-host {
+  color: var(--color-gold);
+  border: 1px solid var(--color-gold);
+}
+
+.badge-you {
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+}
+
+.invite {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.invite-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+
+.invite-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.invite-input {
+  flex: 1;
+  padding: 0.5rem 0.65rem;
+  font-size: 0.85rem;
+  font-family: var(--font-body);
+  color: var(--color-ink-muted);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-control);
+}
+
+.status {
+  margin: 0;
+  color: var(--color-ink-muted);
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.btn-primary,
+.btn-outline,
+.btn-leave {
+  padding: 0.55rem 1.1rem;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.85rem;
+  border-radius: var(--radius-control);
+  cursor: pointer;
+}
+
+.btn-primary {
+  border: 0;
+  background: var(--color-primary);
+  color: var(--color-primary-ink);
+}
+
+.btn-primary:disabled {
+  background: var(--color-border);
+  color: var(--color-ink-muted);
+  cursor: not-allowed;
+}
+
+.btn-outline {
+  border: 1px solid var(--color-primary);
+  background: transparent;
+  color: var(--color-primary);
+}
+
+.btn-leave {
+  border: 1px solid var(--color-danger);
+  background: transparent;
+  color: var(--color-danger);
+}

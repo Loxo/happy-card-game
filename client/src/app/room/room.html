@@ -1,0 +1,49 @@
+@if (roomState(); as state) {
+  <main class="room">
+    <h1>Room {{ state.code }}</h1>
+    <p class="hint">Share this code with friends so they can join.</p>
+
+    <div class="invite">
+      <span class="invite-label">Invite link</span>
+      <div class="invite-row">
+        <input type="text" class="invite-input" [value]="inviteLink()" readonly (click)="$any($event.target).select()" />
+        <button type="button" class="btn-outline" (click)="copyInviteLink()">
+          {{ copied() ? 'Copied' : 'Copy' }}
+        </button>
+      </div>
+    </div>
+
+    <ul class="roster">
+      @for (playerId of state.players; track playerId) {
+        <li>
+          <span class="seat">Player {{ $index + 1 }}</span>
+          @if (playerId === state.hostId) {
+            <span class="badge badge-host">host</span>
+          }
+          @if (playerId === state.yourPlayerId) {
+            <span class="badge badge-you">you</span>
+          }
+        </li>
+      }
+    </ul>
+
+    <p class="status">
+      @if (state.players.length < 2) {
+        Waiting for at least one more player…
+      } @else if (isHost()) {
+        Ready when you are.
+      } @else {
+        Waiting for the host to start the game…
+      }
+    </p>
+
+    <div class="actions">
+      @if (isHost()) {
+        <button type="button" class="btn-primary" [disabled]="!canStart()" (click)="startGame()">
+          Start game
+        </button>
+      }
+      <button type="button" class="btn-leave" (click)="leave()">Leave room</button>
+    </div>
+  </main>
+}

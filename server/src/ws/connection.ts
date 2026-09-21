@@ -23,7 +23,7 @@ export function handleConnection(roomManager: RoomManager, ws: WebSocket): void 
   ws.on('close', () => {
     const removed = roomManager.removeConnection(ws);
     if (removed && !removed.room.isEmpty()) {
-      removed.room.broadcast(removed.room.toRoomState());
+      removed.room.broadcastRoomState();
     }
   });
 }
