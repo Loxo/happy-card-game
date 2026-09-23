@@ -12,12 +12,14 @@ h1 {
   font-family: var(--font-display);
   font-weight: 600;
   letter-spacing: 0.06em;
-  color: var(--color-primary);
+  /* Sits directly on the dark page background, not on --color-surface —
+     needs the light-ink family, not --color-primary. */
+  color: var(--color-ink-light);
 }
 
 .hint {
   margin: 0;
-  color: var(--color-ink-muted);
+  color: var(--color-ink-light-muted);
 }
 
 .roster {
@@ -86,7 +88,9 @@ h1 {
   padding: 0.5rem 0.65rem;
   font-size: 0.85rem;
   font-family: var(--font-body);
-  color: var(--color-ink-muted);
+  /* Its own background is --color-bg (dark), regardless of the light
+     .invite panel around it — needs light-ink text, not --color-ink-muted. */
+  color: var(--color-ink-light-muted);
   background: var(--color-bg);
   border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-control);
@@ -94,7 +98,8 @@ h1 {
 
 .status {
   margin: 0;
-  color: var(--color-ink-muted);
+  /* Direct on the dark page background — see the h1 note above. */
+  color: var(--color-ink-light-muted);
 }
 
 .actions {

@@ -1,15 +1,67 @@
-/* Theme: Tabletop Warm — felt green, parchment, brass */
+/* Theme: Tabletop Dark Wood — felt, brass, warm lamplight.
+   Contrast-checked against WCAG: every text/background pairing below stays
+   >= 4.5:1 (large/bold or decorative pairings are allowed lower and are
+   marked). See aidd_docs/tasks/2026_09/2026_09_23_board-redesign/phase-1.md. */
 :root {
-  --color-bg: #f3ead8;
+  /* Page and readable-surface base — unchanged from the parchment theme:
+     card bodies and form panels stay light so dark ink text keeps reading. */
+  --color-bg: #2e1c11;
   --color-surface: #fbf5e9;
   --color-border: #d8c7a1;
   --color-border-strong: #c9b98e;
   --color-ink: #3a2a1d;
   --color-ink-muted: #6b4226;
-  --color-primary: #2f5233;
-  --color-primary-ink: #fbf5e9;
-  --color-gold: #c9a227;
+
+  /* Primary accent — was the felt green; now a dark wood-frame brown so it
+     stays legible as plain text/border on --color-surface (9.4:1) and as a
+     solid button background paired with --color-primary-ink (8.3:1). */
+  --color-primary: #5a3a22;
+  --color-primary-ink: #f6e7c8;
+
+  /* Decorative gold — borders and bold small-caps badges only, never body
+     text (matches its pre-existing usage; ~2:1 on cream, same ballpark as
+     the old #c9a227 it replaces). */
+  --color-gold: #d4a52a;
+
   --color-danger: #a13d2d;
+  /* Same red family, lightened — for danger text sitting directly on a dark
+     wood/felt background instead of on --color-surface (2.5:1 there vs
+     7.98:1 here). */
+  --color-danger-light: #f0a293;
+
+  /* Dark-wood surfaces, board-specific: panels, chips, the felt table. */
+  --color-wood: #3a2416;
+  --color-wood-deep: #26160c;
+  --color-wood-panel: #4a2e1c;
+  --color-wood-panel-active: #56361f;
+  --color-wood-frame: #a8763e;
+  --color-felt: #7c3524;
+  --color-felt-rail: #5a2616;
+
+  /* Light ink for text sitting directly on wood/felt (not on --color-surface). */
+  --color-ink-light: #f6e7c8;
+  --color-ink-light-muted: #c9a878;
+
+  /* Bright call-to-action gold — background-only (Play button, is-turn ring,
+     round-tracker dot). Paired ink is dark; never use as text on a light
+     surface (1.7:1 there — too low). */
+  --color-accent-strong: #e8b93a;
+  --color-accent-strong-ink: #2b1d12;
+
+  /* Card categories — one color per CardDefinition.category. */
+  --cat-job: #a8561a;
+  --cat-flirt: #b84a5c;
+  --cat-relationship: #8a2a3a;
+  --cat-child: #7b4a86;
+  --cat-education: #3d6b3e;
+  --cat-bonus: #d4a52a;
+  --cat-malus: #1f100c;
+  --cat-malus-accent: #c8453a;
+
+  /* Resources — education intentionally shares its category's green. */
+  --res-happiness: #d4a52a;
+  --res-education: #3d6b3e;
+  --res-money: #e8b93a;
 
   --font-display: "Fraunces", serif;
   --font-body: "Karla", sans-serif;

@@ -1,0 +1,33 @@
+<article
+  class="card-face"
+  [class.selected]="selected()"
+  [attr.data-size]="size()"
+  [attr.data-category]="definition().category"
+  [style.--card-color]="visual().color"
+>
+  <header class="head">
+    <app-icon [name]="visual().icon" [size]="headerIconSize()" />
+    <span class="cat-label">{{ visual().label }}</span>
+    @if (badge(); as b) {
+      <span class="badge">
+        <app-icon [name]="b.icon" [size]="headerIconSize()" />
+        <span>{{ b.value }}</span>
+      </span>
+    }
+  </header>
+
+  <div class="illustration">
+    <app-icon [name]="visual().icon" [size]="illustrationIconSize()" />
+    @if (size() === 'hand') {
+      <span class="illustration-label">Illustration</span>
+    }
+  </div>
+
+  <div class="body">
+    <span class="name">{{ definition().name }}</span>
+    <span class="description">{{ definition().description }}</span>
+    @if (footer()) {
+      <div class="footer">{{ footer() }}</div>
+    }
+  </div>
+</article>

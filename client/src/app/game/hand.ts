@@ -1,11 +1,11 @@
 import { Component, computed, input, output, signal } from '@angular/core';
-import type { CardInstance } from '@happy-card-game/shared';
+import type { CardDefinition, CardInstance } from '@happy-card-game/shared';
+import { CardFace } from './card-face';
 import { canPlayCard, getDefinition, playRejectionText, resolveUpgrade } from './table-rules';
 
 interface HandCardView {
   card: CardInstance;
-  name: string;
-  category: string;
+  definition: CardDefinition;
   canPlay: boolean;
   playBlockedReason: string | null;
   hasMalusEffect: boolean;
@@ -13,7 +13,7 @@ interface HandCardView {
 
 @Component({
   selector: 'app-hand',
-  imports: [],
+  imports: [CardFace],
   templateUrl: './hand.html',
   styleUrl: './hand.css',
 })
@@ -39,13 +39,17 @@ export class Hand {
       const check = canPlayCard(this.table(), definition, upgradeTarget);
       return {
         card,
-        name: definition.name,
-        category: definition.category,
+        definition,
         canPlay: check.ok,
         playBlockedReason: check.ok ? null : playRejectionText(check.reason),
         hasMalusEffect: !!definition.effect,
       };
     }),
+  );
+
+  /** The single selected card's view — drives the one floating action bar below the fan. */
+  protected readonly selectedView = computed(() =>
+    this.views().find((v) => v.card.instanceId === this.selectedCardId()),
   );
 
   onCardClick(view: HandCardView): void {

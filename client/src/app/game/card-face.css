@@ -1,0 +1,262 @@
+/* One structure, three scales via [data-size] — keeps this file under the
+   anyComponentStyle budget instead of tripling into three near-duplicate
+   components. Category color comes in as --card-color (set inline by
+   card-face.ts), so no per-category color rule is duplicated here either. */
+
+.card-face {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  background: var(--card-color);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.25),
+    0 8px 16px rgba(20, 8, 2, 0.45);
+}
+
+.card-face[data-category='malus'] {
+  box-shadow:
+    inset 0 0 0 2px var(--cat-malus-accent),
+    0 8px 16px rgba(20, 8, 2, 0.5);
+}
+
+.card-face.selected[data-size='hand'] {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.25),
+    0 0 0 3px var(--color-accent-strong),
+    0 0 22px 4px rgba(232, 185, 58, 0.45),
+    0 16px 26px rgba(20, 8, 2, 0.5);
+}
+
+/* ---- Sizes ---- */
+
+.card-face[data-size='mini'] {
+  width: 116px;
+  height: 168px;
+  padding: 4px;
+  border-radius: 10px;
+  gap: 4px;
+}
+
+.card-face[data-size='tableau'] {
+  width: 96px;
+  height: 134px;
+  padding: 3px;
+  border-radius: 8px;
+  gap: 3px;
+}
+
+.card-face[data-size='hand'] {
+  width: 150px;
+  height: 222px;
+  padding: 5px;
+  border-radius: 12px;
+  gap: 5px;
+}
+
+/* ---- Header ---- */
+
+.head {
+  display: flex;
+  align-items: center;
+  color: var(--color-primary-ink);
+}
+
+[data-size='mini'] .head {
+  height: 18px;
+  gap: 4px;
+  padding: 0 3px;
+}
+
+[data-size='tableau'] .head {
+  height: 14px;
+  gap: 3px;
+  padding: 0 2px;
+}
+
+[data-size='hand'] .head {
+  height: 22px;
+  gap: 5px;
+  padding: 0 3px;
+}
+
+/* Tableau's header is icon + badge only — the category name is already the
+   grid slot's own header strip (built in tableau.html), so repeating it
+   inside every card would be redundant. */
+[data-size='tableau'] .cat-label {
+  display: none;
+}
+
+.cat-label {
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+[data-size='mini'] .cat-label {
+  font-size: 9px;
+}
+
+[data-size='hand'] .cat-label {
+  font-size: 10px;
+}
+
+.badge {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 20px;
+  padding: 0 6px 0 3px;
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--card-color);
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+[data-size='mini'] .badge,
+[data-size='tableau'] .badge {
+  height: 14px;
+  padding: 0 5px;
+  font-size: 10px;
+}
+
+[data-size='hand'] .badge {
+  font-size: 13px;
+}
+
+/* ---- Illustration placeholder ---- */
+
+.illustration {
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 6px;
+  background-color: color-mix(in srgb, var(--card-color) 18%, white);
+  background-image: repeating-linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--card-color) 14%, transparent) 0,
+    color-mix(in srgb, var(--card-color) 14%, transparent) 5px,
+    transparent 5px,
+    transparent 10px
+  );
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+  color: var(--card-color);
+  opacity: 1;
+}
+
+.illustration app-icon {
+  opacity: 0.65;
+}
+
+[data-size='mini'] .illustration {
+  height: 70px;
+  border-radius: 6px;
+}
+
+[data-size='tableau'] .illustration {
+  height: 54px;
+  border-radius: 5px;
+}
+
+[data-size='hand'] .illustration {
+  height: 84px;
+  border-radius: 7px;
+}
+
+.illustration-label {
+  position: absolute;
+  left: 6px;
+  bottom: 4px;
+  font-size: 7.5px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--card-color) 70%, black);
+}
+
+/* ---- Body ---- */
+
+.body {
+  flex-grow: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--color-surface);
+  color: var(--color-ink);
+}
+
+[data-size='mini'] .body {
+  border-radius: 6px;
+  padding: 6px 7px;
+  gap: 3px;
+}
+
+[data-size='tableau'] .body {
+  border-radius: 5px;
+  padding: 4px 5px;
+  gap: 2px;
+}
+
+[data-size='hand'] .body {
+  border-radius: 7px;
+  padding: 7px 8px;
+  gap: 4px;
+}
+
+.name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+[data-size='mini'] .name {
+  font-size: 13px;
+}
+
+[data-size='tableau'] .name {
+  font-size: 11.5px;
+}
+
+[data-size='hand'] .name {
+  font-size: 15px;
+}
+
+.description {
+  flex-grow: 1;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  line-height: 1.3;
+  color: var(--color-ink-muted);
+}
+
+[data-size='mini'] .description {
+  font-size: 9.5px;
+  -webkit-line-clamp: 2;
+}
+
+[data-size='tableau'] .description {
+  font-size: 8.5px;
+  -webkit-line-clamp: 1;
+}
+
+[data-size='hand'] .description {
+  font-size: 10px;
+  -webkit-line-clamp: 2;
+}
+
+.footer {
+  margin-top: auto;
+  padding-top: 5px;
+  border-top: 1px dashed var(--color-border);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
