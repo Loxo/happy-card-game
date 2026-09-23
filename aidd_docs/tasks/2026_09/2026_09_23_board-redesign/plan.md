@@ -1,6 +1,6 @@
 ---
 objective: "The game board (and the theme tokens it sits on) matches the 'Happy Card Game — Board' Claude Design artifact, with no server/protocol change and the existing test suite green."
-status: pending
+status: implemented
 ---
 
 # Plan: Board redesign — dark-wood theme
