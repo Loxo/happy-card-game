@@ -10,23 +10,44 @@
   [disabled]="!selectable()"
   (click)="onClick()"
 >
-  <div class="seat-head">
-    <span class="seat-label">{{ seatLabel() }}</span>
-    @if (isTurn()) {
-      <span class="turn-dot" aria-label="current turn"></span>
-    }
+  <div class="avatar">
+    <span>{{ avatarLetter() }}</span>
+  </div>
+
+  <div class="info">
+    <div class="seat-head">
+      <span class="seat-label">{{ seatLabel() }}</span>
+      @if (isTurn()) {
+        <span class="turn-dot" aria-label="current turn"></span>
+      }
+    </div>
+
     @if (!connected()) {
       <span class="badge badge-disconnected">disconnected</span>
     }
+
+    @if (tableauSummary().length > 0) {
+      <div class="chips">
+        @for (entry of tableauSummary(); track entry.category) {
+          <div class="chip">
+            <span class="chip-icon" [style.background]="categoryVisual(entry.category).color">
+              <app-icon [name]="categoryVisual(entry.category).icon" [size]="14" />
+            </span>
+            @if (entry.count > 1) {
+              <span class="chip-count">×{{ entry.count }}</span>
+            }
+          </div>
+        }
+      </div>
+    }
   </div>
 
-  <div class="hand-count">{{ opponent().handCount }} card{{ opponent().handCount === 1 ? '' : 's' }} in hand</div>
-
-  @if (tableauSummary().length > 0) {
-    <ul class="mini-tableau">
-      @for (entry of tableauSummary(); track entry.category) {
-        <li>{{ entry.category }} × {{ entry.count }}</li>
+  <div class="hand">
+    <div class="hand-glyph" aria-hidden="true">
+      @for (card of handGlyphs(); track $index) {
+        <span class="glyph-card"></span>
       }
-    </ul>
-  }
+    </div>
+    <span class="hand-count">{{ opponent().handCount }} card{{ opponent().handCount === 1 ? '' : 's' }} in hand</span>
+  </div>
 </button>

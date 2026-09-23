@@ -1,5 +1,7 @@
 import { Component, computed, input, output } from '@angular/core';
 import type { OpponentSummary } from '@happy-card-game/shared';
+import { categoryVisual } from './category-visuals';
+import { Icon } from './icon';
 import { getDefinition } from './table-rules';
 
 interface CategoryCount {
@@ -7,9 +9,12 @@ interface CategoryCount {
   count: number;
 }
 
+/** Caps the stacked mini-card glyph's visible rectangles — a precise count is already shown as text alongside it. */
+const MAX_HAND_GLYPHS = 3;
+
 @Component({
   selector: 'app-opponent-seat',
-  imports: [],
+  imports: [Icon],
   templateUrl: './opponent-seat.html',
   styleUrl: './opponent-seat.css',
 })
@@ -23,6 +28,8 @@ export class OpponentSeat {
 
   readonly pick = output<string>();
 
+  protected readonly categoryVisual = categoryVisual;
+
   protected readonly tableauSummary = computed<CategoryCount[]>(() => {
     const counts = new Map<string, number>();
     for (const instance of this.opponent().table) {
@@ -31,6 +38,12 @@ export class OpponentSeat {
     }
     return [...counts.entries()].map(([category, count]) => ({ category, count }));
   });
+
+  protected readonly avatarLetter = computed(() => this.seatLabel().charAt(0).toUpperCase());
+
+  protected readonly handGlyphs = computed(() =>
+    Array.from({ length: Math.min(this.opponent().handCount, MAX_HAND_GLYPHS) }),
+  );
 
   onClick(): void {
     if (this.selectable()) {
