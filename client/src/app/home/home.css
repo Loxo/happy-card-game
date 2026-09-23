@@ -12,12 +12,14 @@ h1 {
   font-family: var(--font-display);
   font-weight: 600;
   font-size: 2rem;
-  color: var(--color-primary);
+  /* Sits directly on the dark page background, not on --color-surface —
+     needs the light-ink family, not --color-primary. */
+  color: var(--color-ink-light);
 }
 
 .tagline {
   margin: 0;
-  color: var(--color-ink-muted);
+  color: var(--color-ink-light-muted);
 }
 
 .card {
@@ -102,6 +104,7 @@ input:focus-visible {
 }
 
 .error {
-  color: var(--color-danger);
+  /* Direct on the dark page background — see the h1 note above. */
+  color: var(--color-danger-light);
   margin: 0;
 }

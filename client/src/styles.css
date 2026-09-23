@@ -24,6 +24,10 @@
   --color-gold: #d4a52a;
 
   --color-danger: #a13d2d;
+  /* Same red family, lightened — for danger text sitting directly on a dark
+     wood/felt background instead of on --color-surface (2.5:1 there vs
+     7.98:1 here). */
+  --color-danger-light: #f0a293;
 
   /* Dark-wood surfaces, board-specific: panels, chips, the felt table. */
   --color-wood: #3a2416;
