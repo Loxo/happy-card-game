@@ -2,6 +2,8 @@
 
 A small web card game, inspired by the "Happy Smile" board game, for 2-4 friends. No accounts, no matchmaking, no setup friction — one invite link, then play.
 
+![The game board — dark-wood theme, felt table, category-colored cards, fanned hand](docs/screenshots/board.png)
+
 ## Stack
 
 - **Client** — Angular SPA (standalone components, signals)
