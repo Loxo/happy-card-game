@@ -2,17 +2,23 @@ import { Component, computed, effect, inject, signal, untracked } from '@angular
 import { Router } from '@angular/router';
 import {
   RESOURCE_KINDS,
+  type CardDefinition,
   type CardInstance,
   type CardSource,
   type PlayedCardEntry,
   type TurnActionKind,
 } from '@happy-card-game/shared';
 import { WsService } from '../ws.service';
+import { CardFace } from './card-face';
+import { categoryVisual, TABLEAU_CATEGORY_ORDER } from './category-visuals';
 import { Hand } from './hand';
+import { Icon } from './icon';
 import { OpponentSeat } from './opponent-seat';
 import { Table } from './table';
 import { Tableau } from './tableau';
 import { getDefinition } from './table-rules';
+
+type RoundDotState = 'filled' | 'current' | 'hollow';
 
 type Selection =
   | { kind: 'malus-target'; card: CardInstance }
@@ -31,7 +37,7 @@ const SEAT_POSITIONS: Array<'top' | 'left' | 'right'> = ['top', 'left', 'right']
 
 @Component({
   selector: 'app-game-board',
-  imports: [Hand, OpponentSeat, Table, Tableau],
+  imports: [CardFace, Hand, Icon, OpponentSeat, Table, Tableau],
   templateUrl: './game-board.html',
   styleUrl: './game-board.css',
 })
@@ -155,6 +161,37 @@ export class GameBoard {
     }));
   });
 
+  /**
+   * `MAX_ROUNDS` lives server-side only (`server/src/game/state.ts`) and
+   * isn't exported through `shared` — but the engine sets
+   * `roundsRemaining = MAX_ROUNDS` at game start, strictly before its first
+   * decrement, so the *first* `GameState` this client ever observes always
+   * carries the true total. Captured once and held for the game's lifetime.
+   */
+  private readonly totalRoundsSignal = signal<number | null>(null);
+  protected readonly totalRounds = computed(() => this.totalRoundsSignal() ?? 0);
+
+  protected readonly roundTrackerDots = computed<RoundDotState[]>(() => {
+    const total = this.totalRounds();
+    const remaining = this.gameState()?.roundsRemaining ?? 0;
+    if (total <= 0) {
+      return [];
+    }
+    const played = total - remaining;
+    return Array.from({ length: total }, (_, i): RoundDotState => {
+      if (i < played) return 'filled';
+      if (i === played && remaining > 0) return 'current';
+      return 'hollow';
+    });
+  });
+
+  protected readonly currentRoundNumber = computed(() =>
+    Math.min(this.totalRounds() - (this.gameState()?.roundsRemaining ?? 0) + 1, this.totalRounds()),
+  );
+
+  protected readonly legendCategories = [...TABLEAU_CATEGORY_ORDER, 'malus'] as const;
+  protected readonly categoryVisual = categoryVisual;
+
   constructor() {
     // A direct link/refresh into the game route has no live socket state
     // (state lives only in-memory, per architecture) — bounce back home
@@ -163,6 +200,16 @@ export class GameBoard {
       if (!this.gameState()) {
         this.router.navigate(['/']);
       }
+    });
+
+    // Capture the round total once, from the first GameState this client sees.
+    effect(() => {
+      const state = this.gameState();
+      untracked(() => {
+        if (state && this.totalRoundsSignal() === null) {
+          this.totalRoundsSignal.set(state.roundsRemaining);
+        }
+      });
     });
 
     // A fresh GameState broadcast only ever follows an *accepted* action —
@@ -192,6 +239,10 @@ export class GameBoard {
 
   protected definitionName(card: CardInstance): string {
     return getDefinition(card.definitionId).name;
+  }
+
+  protected definitionFor(card: CardInstance): CardDefinition {
+    return getDefinition(card.definitionId);
   }
 
   protected seatLabelFor(playerId: string): string {

@@ -1,8 +1,9 @@
 import { Component, input } from '@angular/core';
+import { Icon } from './icon';
 
 @Component({
   selector: 'app-table',
-  imports: [],
+  imports: [Icon],
   templateUrl: './table.html',
   styleUrl: './table.css',
 })

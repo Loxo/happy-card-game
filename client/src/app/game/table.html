@@ -1,9 +1,28 @@
 <div class="table">
-  <div class="pile">
-    <span class="pile-label">Deck</span>
-    <span class="pile-count">{{ deckCount() }} left</span>
+  <div class="pile pile-draw">
+    <div class="stack">
+      <div class="card-shadow card-shadow-2"></div>
+      <div class="card-shadow card-shadow-1"></div>
+      <div class="card-face-down">
+        <div class="card-back-panel">
+          <div class="medallion">
+            <app-icon name="happiness" [size]="28" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pile-chip">
+      <span class="pile-label">Pioche</span>
+      <span class="pile-count">{{ deckCount() }}</span>
+    </div>
   </div>
+
   <div class="pile pile-discard">
-    <span class="pile-label">Discard</span>
+    <div class="discard-slot">
+      <app-icon name="discard" [size]="26" />
+    </div>
+    <div class="pile-chip">
+      <span class="pile-label">Défausse</span>
+    </div>
   </div>
 </div>

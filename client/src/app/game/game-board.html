@@ -1,5 +1,28 @@
 @if (gameState(); as state) {
   <main class="board">
+    <div class="top-bar">
+      <div class="title-chip">
+        <span class="title-icon"><app-icon name="happiness" [size]="18" /></span>
+        <span class="wordmark">Happy</span>
+        <span class="divider"></span>
+        <span class="round-label">Manche {{ currentRoundNumber() }} / {{ totalRounds() }}</span>
+        <div class="round-dots">
+          @for (dot of roundTrackerDots(); track $index) {
+            <span class="dot" [class.filled]="dot === 'filled'" [class.current]="dot === 'current'"></span>
+          }
+        </div>
+      </div>
+
+      <div class="legend">
+        @for (category of legendCategories; track category) {
+          <span class="legend-chip">
+            <span class="swatch" [style.background]="categoryVisual(category).color"></span>
+            {{ categoryVisual(category).label }}
+          </span>
+        }
+      </div>
+    </div>
+
     <div class="opponents">
       @for (seat of seatedOpponents(); track seat.opponent.playerId) {
         <app-opponent-seat
@@ -14,22 +37,22 @@
       }
     </div>
 
-    <app-table [deckCount]="state.deckCount" />
+    <div class="felt-table">
+      <p class="turn-ribbon">{{ turnStatus() }}</p>
 
-    <div class="played-row">
-      @for (entry of displayPlayedCards(); track entry.playerId) {
-        <div class="played-slot">
-          <span class="played-label">{{ seatLabelFor(entry.playerId) }}</span>
-          <span class="played-card">{{ definitionName(entry.card) }}</span>
-        </div>
-      }
+      <app-table [deckCount]="state.deckCount" />
+
+      <div class="played-row">
+        @for (entry of displayPlayedCards(); track entry.playerId) {
+          <div class="played-slot">
+            <app-card-face [definition]="definitionFor(entry.card)" size="mini" />
+            <span class="played-label">{{ seatLabelFor(entry.playerId) }}</span>
+          </div>
+        }
+      </div>
     </div>
 
     <div class="status">
-      <p class="status-line">
-        {{ turnStatus() }}
-        {{ state.roundsRemaining }} round{{ state.roundsRemaining === 1 ? '' : 's' }} left.
-      </p>
       <p class="resources">
         @for (kind of resourceKinds; track kind) {
           <span>{{ kind }}: {{ state.resources[kind] }}</span>
