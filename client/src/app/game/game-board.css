@@ -36,7 +36,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--cat-bonus) 60%, black);
 }
 
 .wordmark {
@@ -131,14 +130,10 @@
   align-items: center;
   justify-content: center;
   border-radius: 28px;
-  background-color: var(--color-felt);
-  background-image: radial-gradient(rgba(255, 230, 200, 0.05) 1px, rgba(0, 0, 0, 0) 1px);
-  background-size: 5px 5px;
+  background: var(--color-felt);
   box-shadow:
     0 0 0 6px var(--color-felt-rail),
-    0 0 0 8px var(--color-wood-frame),
-    inset 0 0 70px rgba(30, 8, 2, 0.55),
-    0 10px 24px rgba(0, 0, 0, 0.4);
+    0 0 0 8px var(--color-wood-frame);
 }
 
 .turn-ribbon {
@@ -153,9 +148,7 @@
   border-radius: 6px;
   font-size: 0.875rem;
   white-space: nowrap;
-  box-shadow:
-    0 3px 0 color-mix(in srgb, var(--color-accent-strong) 60%, black),
-    0 6px 12px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.35);
 }
 
 .played-row {
@@ -186,15 +179,6 @@
   align-items: center;
   gap: 0.4rem;
   text-align: center;
-}
-
-.resources {
-  margin: 0;
-  display: flex;
-  gap: 1rem;
-  font-size: 0.8rem;
-  text-transform: capitalize;
-  color: var(--color-ink-muted);
 }
 
 .error {
@@ -235,4 +219,97 @@
   padding-left: 1.25rem;
   text-align: left;
   display: inline-block;
+}
+
+/* ---- Player panel: header (avatar + resource pills) wrapping the tableau ---- */
+
+.player-panel {
+  box-sizing: border-box;
+  padding: 0.875rem 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: var(--color-surface);
+  border-radius: 16px;
+  box-shadow:
+    0 0 0 4px var(--color-wood-frame),
+    0 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+.player-head {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  flex-wrap: wrap;
+}
+
+.player-panel .avatar {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: var(--color-felt);
+  color: var(--color-ink-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.125rem;
+  box-shadow: 0 0 0 3px var(--color-surface);
+}
+
+.player-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: var(--color-ink);
+}
+
+.resource-pills {
+  margin-left: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.pill {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.1875rem 0.625rem 0.1875rem 0.1875rem;
+  background: var(--color-bg);
+  border-radius: 999px;
+  box-shadow: 0 2px 0 var(--color-border);
+}
+
+.pill-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-wood);
+}
+
+.pill-value {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.pill-value .value {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.125rem;
+  color: var(--color-ink);
+}
+
+.pill-value .label {
+  font-size: 0.53125rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
 }

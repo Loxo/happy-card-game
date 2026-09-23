@@ -1,22 +1,27 @@
 <div class="tableau">
-  @if (groups().length === 0) {
-    <p class="empty">Your table is empty.</p>
-  }
   @for (group of groups(); track group.category) {
-    <div class="group">
-      <div class="group-head">
-        <span class="group-label">{{ group.category }}</span>
-        @if (group.atCap) {
-          <span class="badge badge-cap">at cap</span>
-        }
+    <div class="slot" [style.--card-color]="categoryVisual(group.category).color">
+      <div class="slot-head">
+        <span class="slot-label">{{ categoryVisual(group.category).label }}</span>
+        <span class="slot-count" [class.at-cap]="group.atCap">
+          {{ group.count }}{{ group.cap !== undefined ? '/' + group.cap : '' }}
+        </span>
       </div>
-      <div class="group-cards">
-        @for (card of group.cards; track card.instanceId) {
-          <button type="button" class="card" [disabled]="disabled()" (click)="onCardClick(card)">
-            {{ definitionOf(card).name }}
-          </button>
-        }
-      </div>
+
+      @if (group.cards.length > 0) {
+        <div class="slot-cards">
+          @for (card of group.cards; track card.instanceId) {
+            <button type="button" class="card" [disabled]="disabled()" (click)="onCardClick(card)">
+              <app-card-face [definition]="definitionOf(card)" size="tableau" />
+            </button>
+          }
+        </div>
+      } @else {
+        <div class="slot-empty">
+          <app-icon [name]="categoryVisual(group.category).icon" [size]="24" />
+          <span>Libre</span>
+        </div>
+      }
     </div>
   }
 </div>

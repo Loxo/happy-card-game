@@ -10,7 +10,7 @@ import {
 } from '@happy-card-game/shared';
 import { WsService } from '../ws.service';
 import { CardFace } from './card-face';
-import { categoryVisual, TABLEAU_CATEGORY_ORDER } from './category-visuals';
+import { categoryVisual, resourceVisual, TABLEAU_CATEGORY_ORDER } from './category-visuals';
 import { Hand } from './hand';
 import { Icon } from './icon';
 import { OpponentSeat } from './opponent-seat';
@@ -191,6 +191,7 @@ export class GameBoard {
 
   protected readonly legendCategories = [...TABLEAU_CATEGORY_ORDER, 'malus'] as const;
   protected readonly categoryVisual = categoryVisual;
+  protected readonly resourceVisual = resourceVisual;
 
   constructor() {
     // A direct link/refresh into the game route has no live socket state

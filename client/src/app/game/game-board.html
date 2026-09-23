@@ -53,11 +53,6 @@
     </div>
 
     <div class="status">
-      <p class="resources">
-        @for (kind of resourceKinds; track kind) {
-          <span>{{ kind }}: {{ state.resources[kind] }}</span>
-        }
-      </p>
       @if (rejectedReason()) {
         <p class="error" role="alert">{{ rejectedReason() }}</p>
       }
@@ -77,11 +72,34 @@
       </div>
     }
 
-    <app-tableau
-      [cards]="displayTable()"
-      [disabled]="interactionDisabled()"
-      (discard)="onTableauDiscard($event)"
-    />
+    <div class="player-panel">
+      <div class="player-head">
+        <div class="avatar">
+          <span>V</span>
+        </div>
+        <span class="player-title">Your table</span>
+
+        <div class="resource-pills">
+          @for (kind of resourceKinds; track kind) {
+            <span class="pill">
+              <span class="pill-icon" [style.background]="resourceVisual(kind).color">
+                <app-icon [name]="resourceVisual(kind).icon" [size]="17" />
+              </span>
+              <span class="pill-value">
+                <span class="value">{{ state.resources[kind] }}</span>
+                <span class="label">{{ resourceVisual(kind).label }}</span>
+              </span>
+            </span>
+          }
+        </div>
+      </div>
+
+      <app-tableau
+        [cards]="displayTable()"
+        [disabled]="interactionDisabled()"
+        (discard)="onTableauDiscard($event)"
+      />
+    </div>
 
     <app-hand
       [cards]="displayHand()"
