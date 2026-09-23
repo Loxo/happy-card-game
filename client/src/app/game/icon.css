@@ -1,0 +1,11 @@
+/* Icons paint in `currentColor` — callers tint by setting `color` on this
+   element or an ancestor, never by branching the SVG itself. */
+:host {
+  display: inline-flex;
+  line-height: 0;
+}
+
+svg {
+  display: block;
+  flex-shrink: 0;
+}
