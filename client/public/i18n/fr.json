@@ -1,5 +1,72 @@
 {
   "app": {
     "title": "Happy Card Game"
+  },
+  "home": {
+    "tagline": "2 à 4 joueurs, un lien, aucun compte.",
+    "startRoomTitle": "Créer une partie",
+    "createRoom": "Créer la partie",
+    "joinRoomTitle": "Rejoindre une partie",
+    "roomCodeLabel": "Code de la partie",
+    "roomCodePlaceholder": "CODE DE PARTIE",
+    "join": "Rejoindre"
+  },
+  "room": {
+    "title": "Partie {{code}}",
+    "hint": "Partagez ce code avec vos amis pour qu'ils rejoignent.",
+    "inviteLabel": "Lien d'invitation",
+    "copy": "Copier",
+    "copied": "Copié",
+    "playerSeat": "Joueur {{index}}",
+    "hostBadge": "hôte",
+    "youBadge": "vous",
+    "waitingForPlayers": "En attente d'au moins un autre joueur…",
+    "readyWhenYouAre": "Prêt quand vous voulez.",
+    "waitingForHost": "En attente que l'hôte lance la partie…",
+    "startGame": "Lancer la partie",
+    "leaveRoom": "Quitter la partie"
+  },
+  "game": {
+    "roundLabel": "Manche {{current}} / {{total}}",
+    "cancel": "Annuler",
+    "finalResultsTitle": "Résultats finaux",
+    "rankingEntry": "{{label}} — {{happiness}} bonheur",
+    "you": "Vous",
+    "otherPlayer": "un joueur",
+    "playerSeat": "Joueur {{index}}",
+    "gameOverStatus": "Partie terminée.",
+    "yourTurnStatus": "À vous de jouer.",
+    "waitingOnStatus": "En attente de {{name}}…",
+    "yourTable": "Votre table",
+    "disconnected": "déconnecté",
+    "handCountOne": "{{count}} carte en main",
+    "handCountOther": "{{count}} cartes en main",
+    "pileDraw": "Pioche",
+    "pileDiscard": "Défausse",
+    "illustration": "Illustration",
+    "emptySlot": "Libre",
+    "play": "Jouer",
+    "discard": "Défausser",
+    "useMalus": "Utiliser le malus",
+    "pairDiscardHint": "Choisissez une carte en main à défausser avec elle."
+  },
+  "categories": {
+    "job": "Emploi",
+    "flirt": "Flirt",
+    "relationship": "Relation",
+    "child": "Enfant",
+    "education": "Éducation",
+    "bonus": "Bonus",
+    "malus": "Malus"
+  },
+  "resources": {
+    "happiness": "Bonheur",
+    "education": "Éducation",
+    "money": "Argent"
+  },
+  "errors": {
+    "cap": "Plafond de catégorie atteint",
+    "exclusion": "Bloqué par une catégorie excluante sur la table",
+    "prerequisite": "Catégorie requise absente de la table"
   }
 }

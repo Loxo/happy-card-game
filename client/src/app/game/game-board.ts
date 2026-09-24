@@ -1,5 +1,6 @@
 import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { Router } from '@angular/router';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import {
   RESOURCE_KINDS,
   type CardDefinition,
@@ -37,13 +38,14 @@ const SEAT_POSITIONS: Array<'top' | 'left' | 'right'> = ['top', 'left', 'right']
 
 @Component({
   selector: 'app-game-board',
-  imports: [CardFace, Hand, Icon, OpponentSeat, Table, Tableau],
+  imports: [CardFace, Hand, Icon, OpponentSeat, Table, Tableau, TranslocoPipe],
   templateUrl: './game-board.html',
   styleUrl: './game-board.css',
 })
 export class GameBoard {
   private readonly ws = inject(WsService);
   private readonly router = inject(Router);
+  private readonly transloco = inject(TranslocoService);
 
   protected readonly gameState = this.ws.gameState;
   protected readonly roomState = this.ws.roomState;
@@ -122,6 +124,7 @@ export class GameBoard {
   protected readonly seatedOpponents = computed(() => {
     const state = this.gameState();
     const room = this.roomState();
+    const lang = this.transloco.activeLang();
     if (!state || !room) {
       return [];
     }
@@ -129,7 +132,10 @@ export class GameBoard {
       const seatIndex = room.players.indexOf(opponent.playerId);
       return {
         opponent,
-        seatLabel: seatIndex === -1 ? opponent.playerId.slice(0, 6) : `Player ${seatIndex + 1}`,
+        seatLabel:
+          seatIndex === -1
+            ? opponent.playerId.slice(0, 6)
+            : this.transloco.translate('game.playerSeat', { index: seatIndex + 1 }, lang),
         position: SEAT_POSITIONS[index] ?? 'right',
         connected: room.players.includes(opponent.playerId),
       };
@@ -138,27 +144,40 @@ export class GameBoard {
 
   protected readonly turnStatus = computed(() => {
     const state = this.gameState();
+    const lang = this.transloco.activeLang();
     if (!state) {
       return '';
     }
     if (state.result) {
-      return 'Game over.';
+      return this.transloco.translate('game.gameOverStatus', {}, lang);
     }
     if (this.isMyTurn()) {
-      return 'Your turn.';
+      return this.transloco.translate('game.yourTurnStatus', {}, lang);
     }
-    return `Waiting on ${this.seatLabelFor(state.turnPlayerId)}…`;
+    return this.transloco.translate(
+      'game.waitingOnStatus',
+      { name: this.seatLabelFor(state.turnPlayerId) },
+      lang,
+    );
   });
 
   protected readonly rankings = computed(() => {
     const result = this.gameState()?.result;
+    const lang = this.transloco.activeLang();
     if (!result) {
       return [];
     }
-    return result.rankings.map((ranking) => ({
-      ...ranking,
-      label: ranking.playerId === this.yourPlayerId() ? 'You' : this.seatLabelFor(ranking.playerId),
-    }));
+    return result.rankings.map((ranking) => {
+      const label =
+        ranking.playerId === this.yourPlayerId()
+          ? this.transloco.translate('game.you', {}, lang)
+          : this.seatLabelFor(ranking.playerId);
+      return {
+        ...ranking,
+        label,
+        resultText: this.transloco.translate('game.rankingEntry', { label, happiness: ranking.happiness }, lang),
+      };
+    });
   });
 
   /**
@@ -248,7 +267,9 @@ export class GameBoard {
 
   protected seatLabelFor(playerId: string): string {
     const seatIndex = this.roomState()?.players.indexOf(playerId) ?? -1;
-    return seatIndex === -1 ? 'a player' : `Player ${seatIndex + 1}`;
+    return seatIndex === -1
+      ? this.transloco.translate('game.otherPlayer')
+      : this.transloco.translate('game.playerSeat', { index: seatIndex + 1 });
   }
 
   onPlay(card: CardInstance): void {

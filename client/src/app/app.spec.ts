@@ -7,8 +7,8 @@ import { provideTranslocoTesting } from './testing/transloco-testing.providers';
 describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [App],
-      providers: [provideRouter(routes), provideTranslocoTesting()],
+      imports: [App, provideTranslocoTesting()],
+      providers: [provideRouter(routes)],
     }).compileComponents();
   });
 

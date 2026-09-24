@@ -1,11 +1,12 @@
 import { Component, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { WsService } from '../ws.service';
 
 @Component({
   selector: 'app-home',
-  imports: [FormsModule],
+  imports: [FormsModule, TranslocoPipe],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })

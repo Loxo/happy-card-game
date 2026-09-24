@@ -1,5 +1,72 @@
 {
   "app": {
     "title": "Happy Card Game"
+  },
+  "home": {
+    "tagline": "2-4 players, one link, no accounts.",
+    "startRoomTitle": "Start a room",
+    "createRoom": "Create room",
+    "joinRoomTitle": "Join a room",
+    "roomCodeLabel": "Room code",
+    "roomCodePlaceholder": "ROOM CODE",
+    "join": "Join"
+  },
+  "room": {
+    "title": "Room {{code}}",
+    "hint": "Share this code with friends so they can join.",
+    "inviteLabel": "Invite link",
+    "copy": "Copy",
+    "copied": "Copied",
+    "playerSeat": "Player {{index}}",
+    "hostBadge": "host",
+    "youBadge": "you",
+    "waitingForPlayers": "Waiting for at least one more player…",
+    "readyWhenYouAre": "Ready when you are.",
+    "waitingForHost": "Waiting for the host to start the game…",
+    "startGame": "Start game",
+    "leaveRoom": "Leave room"
+  },
+  "game": {
+    "roundLabel": "Round {{current}} / {{total}}",
+    "cancel": "Cancel",
+    "finalResultsTitle": "Final results",
+    "rankingEntry": "{{label}} — {{happiness}} happiness",
+    "you": "You",
+    "otherPlayer": "a player",
+    "playerSeat": "Player {{index}}",
+    "gameOverStatus": "Game over.",
+    "yourTurnStatus": "Your turn.",
+    "waitingOnStatus": "Waiting on {{name}}…",
+    "yourTable": "Your table",
+    "disconnected": "disconnected",
+    "handCountOne": "{{count}} card in hand",
+    "handCountOther": "{{count}} cards in hand",
+    "pileDraw": "Draw pile",
+    "pileDiscard": "Discard",
+    "illustration": "Illustration",
+    "emptySlot": "Empty",
+    "play": "Play",
+    "discard": "Discard",
+    "useMalus": "Use malus",
+    "pairDiscardHint": "Choose a hand card to discard along with it."
+  },
+  "categories": {
+    "job": "Job",
+    "flirt": "Flirt",
+    "relationship": "Relationship",
+    "child": "Child",
+    "education": "Education",
+    "bonus": "Bonus",
+    "malus": "Malus"
+  },
+  "resources": {
+    "happiness": "Happiness",
+    "education": "Education",
+    "money": "Money"
+  },
+  "errors": {
+    "cap": "Category cap reached",
+    "exclusion": "Blocked by an excluding category on the table",
+    "prerequisite": "Missing a required category on the table"
   }
 }

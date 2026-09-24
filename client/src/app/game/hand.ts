@@ -1,7 +1,8 @@
-import { Component, computed, input, output, signal } from '@angular/core';
+import { Component, computed, inject, input, output, signal } from '@angular/core';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import type { CardDefinition, CardInstance } from '@happy-card-game/shared';
 import { CardFace } from './card-face';
-import { canPlayCard, getDefinition, playRejectionText, resolveUpgrade } from './table-rules';
+import { canPlayCard, getDefinition, resolveUpgrade } from './table-rules';
 
 interface HandCardView {
   card: CardInstance;
@@ -13,11 +14,13 @@ interface HandCardView {
 
 @Component({
   selector: 'app-hand',
-  imports: [CardFace],
+  imports: [CardFace, TranslocoPipe],
   templateUrl: './hand.html',
   styleUrl: './hand.css',
 })
 export class Hand {
+  private readonly transloco = inject(TranslocoService);
+
   readonly cards = input.required<CardInstance[]>();
   /** The local player's own table — needed to mirror the server's play-rules check. */
   readonly table = input.required<CardInstance[]>();
@@ -32,8 +35,9 @@ export class Hand {
 
   protected readonly selectedCardId = signal<string | null>(null);
 
-  protected readonly views = computed<HandCardView[]>(() =>
-    this.cards().map((card) => {
+  protected readonly views = computed<HandCardView[]>(() => {
+    const lang = this.transloco.activeLang();
+    return this.cards().map((card) => {
       const definition = getDefinition(card.definitionId);
       const upgradeTarget = resolveUpgrade(this.table(), definition);
       const check = canPlayCard(this.table(), definition, upgradeTarget);
@@ -41,11 +45,11 @@ export class Hand {
         card,
         definition,
         canPlay: check.ok,
-        playBlockedReason: check.ok ? null : playRejectionText(check.reason),
+        playBlockedReason: check.ok ? null : this.transloco.translate(`errors.${check.reason}`, {}, lang),
         hasMalusEffect: !!definition.effect,
       };
-    }),
-  );
+    });
+  });
 
   /** The single selected card's view — drives the one floating action bar below the fan. */
   protected readonly selectedView = computed(() =>

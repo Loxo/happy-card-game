@@ -1,6 +1,6 @@
 <div class="hand">
   @if (pairingForTableDiscard()) {
-    <p class="hint">Choose a hand card to discard along with it.</p>
+    <p class="hint">{{ 'game.pairDiscardHint' | transloco }}</p>
   }
 
   <div class="fan">
@@ -27,11 +27,11 @@
       <div class="menu">
         <span class="menu-name">{{ view.definition.name }}</span>
         <button type="button" class="btn-outline btn-play" [disabled]="!view.canPlay" (click)="onPlay(view)">
-          Play
+          {{ 'game.play' | transloco }}
         </button>
-        <button type="button" class="btn-outline" (click)="onDiscard(view)">Discard</button>
+        <button type="button" class="btn-outline" (click)="onDiscard(view)">{{ 'game.discard' | transloco }}</button>
         @if (view.hasMalusEffect) {
-          <button type="button" class="btn-outline" (click)="onUseMalus(view)">Use malus</button>
+          <button type="button" class="btn-outline" (click)="onUseMalus(view)">{{ 'game.useMalus' | transloco }}</button>
         }
         @if (!view.canPlay) {
           <p class="reason">{{ view.playBlockedReason }}</p>

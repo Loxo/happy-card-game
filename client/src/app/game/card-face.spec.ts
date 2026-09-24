@@ -1,10 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { BASE_CARD_SET } from '@happy-card-game/shared';
 import { CardFace, type CardFaceSize } from './card-face';
+import { provideTranslocoTesting } from '../testing/transloco-testing.providers';
 
 describe('CardFace', () => {
   beforeEach(async () => {
-    await TestBed.configureTestingModule({ imports: [CardFace] }).compileComponents();
+    await TestBed.configureTestingModule({ imports: [CardFace, provideTranslocoTesting()] }).compileComponents();
   });
 
   function render(definitionId: string, size: CardFaceSize = 'tableau') {

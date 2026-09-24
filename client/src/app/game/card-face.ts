@@ -1,4 +1,5 @@
 import { Component, computed, input } from '@angular/core';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { RESOURCE_KINDS, type CardDefinition } from '@happy-card-game/shared';
 import { categoryVisual, resourceVisual } from './category-visuals';
 import type { IconName } from './icon';
@@ -21,7 +22,7 @@ interface ValueBadge {
  */
 @Component({
   selector: 'app-card-face',
-  imports: [Icon],
+  imports: [Icon, TranslocoPipe],
   templateUrl: './card-face.html',
   styleUrl: './card-face.css',
 })

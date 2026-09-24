@@ -1,10 +1,11 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { WsService } from '../ws.service';
 
 @Component({
   selector: 'app-room',
-  imports: [],
+  imports: [TranslocoPipe],
   templateUrl: './room.html',
   styleUrl: './room.css',
 })

@@ -2,7 +2,7 @@
   @for (group of groups(); track group.category) {
     <div class="slot" [style.--card-color]="categoryVisual(group.category).color">
       <div class="slot-head">
-        <span class="slot-label">{{ categoryVisual(group.category).label }}</span>
+        <span class="slot-label">{{ categoryVisual(group.category).labelKey | transloco }}</span>
         <span class="slot-count" [class.at-cap]="group.atCap">
           {{ group.count }}{{ group.cap !== undefined ? '/' + group.cap : '' }}
         </span>
@@ -19,7 +19,7 @@
       } @else {
         <div class="slot-empty">
           <app-icon [name]="categoryVisual(group.category).icon" [size]="24" />
-          <span>Libre</span>
+          <span>{{ 'game.emptySlot' | transloco }}</span>
         </div>
       }
     </div>

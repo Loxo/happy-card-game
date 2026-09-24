@@ -16,30 +16,31 @@ import type { IconName } from './icon';
 interface CategoryVisual {
   color: string;
   icon: IconName;
-  /** Display label — French, alongside already-French card content; UI chrome elsewhere stays English. */
-  label: string;
+  /** A `categories.*` translation key, resolved via the `transloco` pipe at each call site — not display text itself. */
+  labelKey: string;
 }
 
 interface ResourceVisual {
   color: string;
   icon: IconName;
-  label: string;
+  /** A `resources.*` translation key, resolved via the `transloco` pipe at each call site — not display text itself. */
+  labelKey: string;
 }
 
 const CATEGORY_VISUALS: Record<string, CategoryVisual> = {
-  job: { color: 'var(--cat-job)', icon: 'job', label: 'Emploi' },
-  flirt: { color: 'var(--cat-flirt)', icon: 'flirt', label: 'Flirt' },
-  relationship: { color: 'var(--cat-relationship)', icon: 'relationship', label: 'Relation' },
-  child: { color: 'var(--cat-child)', icon: 'child', label: 'Enfant' },
-  education: { color: 'var(--cat-education)', icon: 'education', label: 'Éducation' },
-  bonus: { color: 'var(--cat-bonus)', icon: 'bonus', label: 'Bonus' },
-  malus: { color: 'var(--cat-malus)', icon: 'malus', label: 'Malus' },
+  job: { color: 'var(--cat-job)', icon: 'job', labelKey: 'categories.job' },
+  flirt: { color: 'var(--cat-flirt)', icon: 'flirt', labelKey: 'categories.flirt' },
+  relationship: { color: 'var(--cat-relationship)', icon: 'relationship', labelKey: 'categories.relationship' },
+  child: { color: 'var(--cat-child)', icon: 'child', labelKey: 'categories.child' },
+  education: { color: 'var(--cat-education)', icon: 'education', labelKey: 'categories.education' },
+  bonus: { color: 'var(--cat-bonus)', icon: 'bonus', labelKey: 'categories.bonus' },
+  malus: { color: 'var(--cat-malus)', icon: 'malus', labelKey: 'categories.malus' },
 };
 
 const RESOURCE_VISUALS: Record<ResourceKind, ResourceVisual> = {
-  happiness: { color: 'var(--res-happiness)', icon: 'happiness', label: 'Happiness' },
-  education: { color: 'var(--res-education)', icon: 'education', label: 'Education' },
-  money: { color: 'var(--res-money)', icon: 'money', label: 'Money' },
+  happiness: { color: 'var(--res-happiness)', icon: 'happiness', labelKey: 'resources.happiness' },
+  education: { color: 'var(--res-education)', icon: 'education', labelKey: 'resources.education' },
+  money: { color: 'var(--res-money)', icon: 'money', labelKey: 'resources.money' },
 };
 
 /** The fixed, ordered category list the tableau grid renders one slot per — `malus` excluded, since malus cards resolve instantly and never sit on a table. */

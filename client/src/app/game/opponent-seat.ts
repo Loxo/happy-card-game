@@ -1,4 +1,5 @@
-import { Component, computed, input, output } from '@angular/core';
+import { Component, computed, inject, input, output } from '@angular/core';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import type { OpponentSummary } from '@happy-card-game/shared';
 import { categoryVisual } from './category-visuals';
 import { Icon } from './icon';
@@ -14,11 +15,13 @@ const MAX_HAND_GLYPHS = 3;
 
 @Component({
   selector: 'app-opponent-seat',
-  imports: [Icon],
+  imports: [Icon, TranslocoPipe],
   templateUrl: './opponent-seat.html',
   styleUrl: './opponent-seat.css',
 })
 export class OpponentSeat {
+  private readonly transloco = inject(TranslocoService);
+
   readonly opponent = input.required<OpponentSummary>();
   readonly seatLabel = input.required<string>();
   readonly position = input.required<'top' | 'left' | 'right'>();
@@ -44,6 +47,12 @@ export class OpponentSeat {
   protected readonly handGlyphs = computed(() =>
     Array.from({ length: Math.min(this.opponent().handCount, MAX_HAND_GLYPHS) }),
   );
+
+  protected readonly handCountLabel = computed(() => {
+    const count = this.opponent().handCount;
+    const lang = this.transloco.activeLang();
+    return this.transloco.translate(count === 1 ? 'game.handCountOne' : 'game.handCountOther', { count }, lang);
+  });
 
   onClick(): void {
     if (this.selectable()) {
