@@ -88,16 +88,6 @@ export function canPlayCard(
   return { ok: true };
 }
 
-const REASON_TEXT: Record<PlayRejectionReason, string> = {
-  cap: 'Category cap reached',
-  exclusion: 'Blocked by an excluding category on the table',
-  prerequisite: 'Missing a required category on the table',
-};
-
-export function playRejectionText(reason: PlayRejectionReason): string {
-  return REASON_TEXT[reason];
-}
-
 /** Whether `category` is currently at its cap on `playerTable` (bypass-aware) — drives the tableau's "at cap" marker. */
 export function categoryAtCap(playerTable: readonly CardInstance[], category: string): boolean {
   const { bypassCap } = activeBypassSets(playerTable);

@@ -1,22 +1,22 @@
 <main class="home">
-  <h1>Happy Card Game</h1>
-  <p class="tagline">2-4 players, one link, no accounts.</p>
+  <h1>{{ 'app.title' | transloco }}</h1>
+  <p class="tagline">{{ 'home.tagline' | transloco }}</p>
 
   <section class="card">
-    <h2>Start a room</h2>
+    <h2>{{ 'home.startRoomTitle' | transloco }}</h2>
     <button type="button" class="btn btn-primary" (click)="createRoom()" [disabled]="status() === 'connecting'">
-      Create room
+      {{ 'home.createRoom' | transloco }}
     </button>
   </section>
 
   <section class="card">
-    <h2>Join a room</h2>
+    <h2>{{ 'home.joinRoomTitle' | transloco }}</h2>
     <form (ngSubmit)="joinRoom()">
-      <label for="join-code" class="visually-hidden">Room code</label>
+      <label for="join-code" class="visually-hidden">{{ 'home.roomCodeLabel' | transloco }}</label>
       <input
         id="join-code"
         type="text"
-        placeholder="ROOM CODE"
+        [placeholder]="'home.roomCodePlaceholder' | transloco"
         maxlength="5"
         [ngModel]="joinCode()"
         (ngModelChange)="joinCode.set($event)"
@@ -25,7 +25,7 @@
         autocapitalize="characters"
       />
       <button type="submit" class="btn btn-outline" [disabled]="status() === 'connecting' || !joinCode().trim()">
-        Join
+        {{ 'home.join' | transloco }}
       </button>
     </form>
   </section>

@@ -43,7 +43,6 @@ export const CARD_EFFECT_KINDS: readonly CardEffectKind[] = [
 
 export interface CardDefinition {
   id: string;
-  name: string;
   /**
    * A plain string (`'job'`, `'relationship'`, `'flirt'`, `'bonus'`, ...) —
    * the axis every table-constraint check (cap / exclusion / prerequisite)
@@ -87,7 +86,6 @@ export interface CardDefinition {
   bypassCap?: string[];
   /** An instant malus effect, resolved against a target then discarded. */
   effect?: CardEffectKind;
-  description: string;
 }
 
 /**

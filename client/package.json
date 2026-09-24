@@ -12,13 +12,14 @@
   "private": true,
   "packageManager": "pnpm@11.23.0",
   "dependencies": {
-    "@happy-card-game/shared": "workspace:*",
     "@angular/common": "^22.0.0",
     "@angular/compiler": "^22.0.0",
     "@angular/core": "^22.0.0",
     "@angular/forms": "^22.0.0",
     "@angular/platform-browser": "^22.0.0",
     "@angular/router": "^22.0.0",
+    "@happy-card-game/shared": "workspace:*",
+    "@jsverse/transloco": "^8.4.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },

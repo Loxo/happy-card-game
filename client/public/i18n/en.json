@@ -1,0 +1,88 @@
+{
+  "app": {
+    "title": "Happy Card Game"
+  },
+  "home": {
+    "tagline": "2-4 players, one link, no accounts.",
+    "startRoomTitle": "Start a room",
+    "createRoom": "Create room",
+    "joinRoomTitle": "Join a room",
+    "roomCodeLabel": "Room code",
+    "roomCodePlaceholder": "ROOM CODE",
+    "join": "Join"
+  },
+  "room": {
+    "title": "Room {{code}}",
+    "hint": "Share this code with friends so they can join.",
+    "inviteLabel": "Invite link",
+    "copy": "Copy",
+    "copied": "Copied",
+    "playerSeat": "Player {{index}}",
+    "hostBadge": "host",
+    "youBadge": "you",
+    "waitingForPlayers": "Waiting for at least one more player…",
+    "readyWhenYouAre": "Ready when you are.",
+    "waitingForHost": "Waiting for the host to start the game…",
+    "startGame": "Start game",
+    "leaveRoom": "Leave room"
+  },
+  "game": {
+    "roundLabel": "Round {{current}} / {{total}}",
+    "cancel": "Cancel",
+    "finalResultsTitle": "Final results",
+    "rankingEntry": "{{label}} — {{happiness}} happiness",
+    "you": "You",
+    "otherPlayer": "a player",
+    "playerSeat": "Player {{index}}",
+    "gameOverStatus": "Game over.",
+    "yourTurnStatus": "Your turn.",
+    "waitingOnStatus": "Waiting on {{name}}…",
+    "yourTable": "Your table",
+    "disconnected": "disconnected",
+    "handCountOne": "{{count}} card in hand",
+    "handCountOther": "{{count}} cards in hand",
+    "pileDraw": "Draw pile",
+    "pileDiscard": "Discard",
+    "illustration": "Illustration",
+    "emptySlot": "Empty",
+    "play": "Play",
+    "discard": "Discard",
+    "useMalus": "Use malus",
+    "pairDiscardHint": "Choose a hand card to discard along with it."
+  },
+  "categories": {
+    "job": "Job",
+    "flirt": "Flirt",
+    "relationship": "Relationship",
+    "child": "Child",
+    "education": "Education",
+    "bonus": "Bonus",
+    "malus": "Malus"
+  },
+  "resources": {
+    "happiness": "Happiness",
+    "education": "Education",
+    "money": "Money"
+  },
+  "errors": {
+    "cap": "Category cap reached",
+    "exclusion": "Blocked by an excluding category on the table",
+    "prerequisite": "Missing a required category on the table"
+  },
+  "cards": {
+    "job-waiter": { "name": "Waiter", "description": "An entry-level job to get started." },
+    "job-engineer": { "name": "Engineer", "description": "A stable, skilled job." },
+    "job-senior-engineer": { "name": "Senior engineer", "description": "A promotion that replaces the previous job." },
+    "relationship-marriage": { "name": "Marriage", "description": "A commitment that closes the door on flirts." },
+    "flirt-crush": { "name": "Crush", "description": "The start of a romance, incompatible with an active marriage." },
+    "flirt-date": { "name": "Date", "description": "A romantic date." },
+    "flirt-kiss": { "name": "First kiss", "description": "A memorable moment." },
+    "bonus-infidelity": { "name": "Infidelity", "description": "While active, flirts ignore the marriage exclusion." },
+    "bonus-social-butterfly": { "name": "Social butterfly", "description": "While active, the flirt cap is ignored." },
+    "child-baby": { "name": "Baby", "description": "Requires a marriage already on the table." },
+    "education-degree": { "name": "Degree", "description": "A qualification with no cap." },
+    "malus-rival": { "name": "Love rival", "description": "The targeted player skips their next turn." },
+    "malus-layoff": { "name": "Layoff", "description": "The targeted player discards a card." },
+    "malus-thief": { "name": "Thief", "description": "Steals a card from the targeted player." }
+  }
+}

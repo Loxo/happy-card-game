@@ -1,14 +1,14 @@
 @if (roomState(); as state) {
   <main class="room">
-    <h1>Room {{ state.code }}</h1>
-    <p class="hint">Share this code with friends so they can join.</p>
+    <h1>{{ 'room.title' | transloco: { code: state.code } }}</h1>
+    <p class="hint">{{ 'room.hint' | transloco }}</p>
 
     <div class="invite">
-      <span class="invite-label">Invite link</span>
+      <span class="invite-label">{{ 'room.inviteLabel' | transloco }}</span>
       <div class="invite-row">
         <input type="text" class="invite-input" [value]="inviteLink()" readonly (click)="$any($event.target).select()" />
         <button type="button" class="btn-outline" (click)="copyInviteLink()">
-          {{ copied() ? 'Copied' : 'Copy' }}
+          {{ (copied() ? 'room.copied' : 'room.copy') | transloco }}
         </button>
       </div>
     </div>
@@ -16,12 +16,12 @@
     <ul class="roster">
       @for (playerId of state.players; track playerId) {
         <li>
-          <span class="seat">Player {{ $index + 1 }}</span>
+          <span class="seat">{{ 'room.playerSeat' | transloco: { index: $index + 1 } }}</span>
           @if (playerId === state.hostId) {
-            <span class="badge badge-host">host</span>
+            <span class="badge badge-host">{{ 'room.hostBadge' | transloco }}</span>
           }
           @if (playerId === state.yourPlayerId) {
-            <span class="badge badge-you">you</span>
+            <span class="badge badge-you">{{ 'room.youBadge' | transloco }}</span>
           }
         </li>
       }
@@ -29,21 +29,21 @@
 
     <p class="status">
       @if (state.players.length < 2) {
-        Waiting for at least one more player…
+        {{ 'room.waitingForPlayers' | transloco }}
       } @else if (isHost()) {
-        Ready when you are.
+        {{ 'room.readyWhenYouAre' | transloco }}
       } @else {
-        Waiting for the host to start the game…
+        {{ 'room.waitingForHost' | transloco }}
       }
     </p>
 
     <div class="actions">
       @if (isHost()) {
         <button type="button" class="btn-primary" [disabled]="!canStart()" (click)="startGame()">
-          Start game
+          {{ 'room.startGame' | transloco }}
         </button>
       }
-      <button type="button" class="btn-leave" (click)="leave()">Leave room</button>
+      <button type="button" class="btn-leave" (click)="leave()">{{ 'room.leaveRoom' | transloco }}</button>
     </div>
   </main>
 }

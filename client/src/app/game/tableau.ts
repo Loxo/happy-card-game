@@ -1,4 +1,5 @@
 import { Component, computed, input, output } from '@angular/core';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { BASE_CARD_SET, type CardInstance } from '@happy-card-game/shared';
 import { CardFace } from './card-face';
 import { categoryVisual, TABLEAU_CATEGORY_ORDER } from './category-visuals';
@@ -29,7 +30,7 @@ const CATEGORY_CAP: Record<string, number | undefined> = Object.fromEntries(
 
 @Component({
   selector: 'app-tableau',
-  imports: [CardFace, Icon],
+  imports: [CardFace, Icon, TranslocoPipe],
   templateUrl: './tableau.html',
   styleUrl: './tableau.css',
 })

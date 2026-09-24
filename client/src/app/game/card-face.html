@@ -7,7 +7,7 @@
 >
   <header class="head">
     <app-icon [name]="visual().icon" [size]="headerIconSize()" />
-    <span class="cat-label">{{ visual().label }}</span>
+    <span class="cat-label">{{ visual().labelKey | transloco }}</span>
     @if (badge(); as b) {
       <span class="badge">
         <app-icon [name]="b.icon" [size]="headerIconSize()" />
@@ -19,13 +19,13 @@
   <div class="illustration">
     <app-icon [name]="visual().icon" [size]="illustrationIconSize()" />
     @if (size() === 'hand') {
-      <span class="illustration-label">Illustration</span>
+      <span class="illustration-label">{{ 'game.illustration' | transloco }}</span>
     }
   </div>
 
   <div class="body">
-    <span class="name">{{ definition().name }}</span>
-    <span class="description">{{ definition().description }}</span>
+    <span class="name">{{ name() }}</span>
+    <span class="description">{{ description() }}</span>
     @if (footer()) {
       <div class="footer">{{ footer() }}</div>
     }

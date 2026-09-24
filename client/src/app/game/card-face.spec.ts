@@ -1,10 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 import { BASE_CARD_SET } from '@happy-card-game/shared';
 import { CardFace, type CardFaceSize } from './card-face';
+import { provideTranslocoTesting } from '../testing/transloco-testing.providers';
+import en from '../../../public/i18n/en.json';
+
+const CARD_TRANSLATIONS: Record<string, { name: string; description: string }> = en.cards;
 
 describe('CardFace', () => {
   beforeEach(async () => {
-    await TestBed.configureTestingModule({ imports: [CardFace] }).compileComponents();
+    await TestBed.configureTestingModule({ imports: [CardFace, provideTranslocoTesting()] }).compileComponents();
   });
 
   function render(definitionId: string, size: CardFaceSize = 'tableau') {
@@ -22,8 +26,7 @@ describe('CardFace', () => {
   it.each(BASE_CARD_SET.map((d) => d.id))('renders %s at every size without throwing', (id) => {
     for (const size of ['mini', 'tableau', 'hand'] as const) {
       const fixture = render(id, size);
-      const definition = BASE_CARD_SET.find((d) => d.id === id)!;
-      expect(fixture.nativeElement.textContent).toContain(definition.name);
+      expect(fixture.nativeElement.textContent).toContain(CARD_TRANSLATIONS[id].name);
       expect(fixture.nativeElement.querySelector('.card-face').getAttribute('data-size')).toBe(size);
     }
   });

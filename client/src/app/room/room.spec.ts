@@ -4,6 +4,7 @@ import { provideRouter, Router } from '@angular/router';
 import type { GameStateMessage, RoomStateMessage } from '@happy-card-game/shared';
 import { RoomWaiting } from './room';
 import { WsService } from '../ws.service';
+import { provideTranslocoTesting } from '../testing/transloco-testing.providers';
 
 @Component({ selector: 'app-stub', template: '' })
 class Stub {}
@@ -47,7 +48,7 @@ describe('RoomWaiting', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RoomWaiting],
+      imports: [RoomWaiting, provideTranslocoTesting()],
       providers: [
         provideRouter([
           { path: '', component: Stub },

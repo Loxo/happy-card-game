@@ -23,7 +23,7 @@
     </div>
 
     @if (!connected()) {
-      <span class="badge badge-disconnected">disconnected</span>
+      <span class="badge badge-disconnected">{{ 'game.disconnected' | transloco }}</span>
     }
 
     @if (tableauSummary().length > 0) {
@@ -48,6 +48,6 @@
         <span class="glyph-card"></span>
       }
     </div>
-    <span class="hand-count">{{ opponent().handCount }} card{{ opponent().handCount === 1 ? '' : 's' }} in hand</span>
+    <span class="hand-count">{{ handCountLabel() }}</span>
   </div>
 </button>

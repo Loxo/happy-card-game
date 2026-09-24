@@ -1,0 +1,88 @@
+{
+  "app": {
+    "title": "Happy Card Game"
+  },
+  "home": {
+    "tagline": "2 à 4 joueurs, un lien, aucun compte.",
+    "startRoomTitle": "Créer une partie",
+    "createRoom": "Créer la partie",
+    "joinRoomTitle": "Rejoindre une partie",
+    "roomCodeLabel": "Code de la partie",
+    "roomCodePlaceholder": "CODE DE PARTIE",
+    "join": "Rejoindre"
+  },
+  "room": {
+    "title": "Partie {{code}}",
+    "hint": "Partagez ce code avec vos amis pour qu'ils rejoignent.",
+    "inviteLabel": "Lien d'invitation",
+    "copy": "Copier",
+    "copied": "Copié",
+    "playerSeat": "Joueur {{index}}",
+    "hostBadge": "hôte",
+    "youBadge": "vous",
+    "waitingForPlayers": "En attente d'au moins un autre joueur…",
+    "readyWhenYouAre": "Prêt quand vous voulez.",
+    "waitingForHost": "En attente que l'hôte lance la partie…",
+    "startGame": "Lancer la partie",
+    "leaveRoom": "Quitter la partie"
+  },
+  "game": {
+    "roundLabel": "Manche {{current}} / {{total}}",
+    "cancel": "Annuler",
+    "finalResultsTitle": "Résultats finaux",
+    "rankingEntry": "{{label}} — {{happiness}} bonheur",
+    "you": "Vous",
+    "otherPlayer": "un joueur",
+    "playerSeat": "Joueur {{index}}",
+    "gameOverStatus": "Partie terminée.",
+    "yourTurnStatus": "À vous de jouer.",
+    "waitingOnStatus": "En attente de {{name}}…",
+    "yourTable": "Votre table",
+    "disconnected": "déconnecté",
+    "handCountOne": "{{count}} carte en main",
+    "handCountOther": "{{count}} cartes en main",
+    "pileDraw": "Pioche",
+    "pileDiscard": "Défausse",
+    "illustration": "Illustration",
+    "emptySlot": "Libre",
+    "play": "Jouer",
+    "discard": "Défausser",
+    "useMalus": "Utiliser le malus",
+    "pairDiscardHint": "Choisissez une carte en main à défausser avec elle."
+  },
+  "categories": {
+    "job": "Emploi",
+    "flirt": "Flirt",
+    "relationship": "Relation",
+    "child": "Enfant",
+    "education": "Éducation",
+    "bonus": "Bonus",
+    "malus": "Malus"
+  },
+  "resources": {
+    "happiness": "Bonheur",
+    "education": "Éducation",
+    "money": "Argent"
+  },
+  "errors": {
+    "cap": "Plafond de catégorie atteint",
+    "exclusion": "Bloqué par une catégorie excluante sur la table",
+    "prerequisite": "Catégorie requise absente de la table"
+  },
+  "cards": {
+    "job-waiter": { "name": "Serveur", "description": "Un petit boulot pour commencer." },
+    "job-engineer": { "name": "Ingénieur", "description": "Un emploi stable et qualifié." },
+    "job-senior-engineer": { "name": "Ingénieur senior", "description": "Une promotion qui remplace le poste précédent." },
+    "relationship-marriage": { "name": "Mariage", "description": "Un engagement qui ferme la porte aux flirts." },
+    "flirt-crush": { "name": "Coup de coeur", "description": "Un début de romance, incompatible avec un mariage actif." },
+    "flirt-date": { "name": "Rendez-vous", "description": "Un rendez-vous romantique." },
+    "flirt-kiss": { "name": "Premier baiser", "description": "Un moment marquant." },
+    "bonus-infidelity": { "name": "Infidélité", "description": "Tant qu'elle est active, les flirts ignorent l'exclusion du mariage." },
+    "bonus-social-butterfly": { "name": "Papillon social", "description": "Tant qu'elle est active, le plafond de flirts est ignoré." },
+    "child-baby": { "name": "Bébé", "description": "Nécessite un mariage déjà sur la table." },
+    "education-degree": { "name": "Diplôme", "description": "Un titre qui n'a pas de plafond." },
+    "malus-rival": { "name": "Rival amoureux", "description": "Le joueur ciblé passe son prochain tour." },
+    "malus-layoff": { "name": "Licenciement", "description": "Le joueur ciblé défausse une carte." },
+    "malus-thief": { "name": "Voleur", "description": "Vole une carte au joueur ciblé." }
+  }
+}
