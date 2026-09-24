@@ -68,5 +68,21 @@
     "cap": "Plafond de catégorie atteint",
     "exclusion": "Bloqué par une catégorie excluante sur la table",
     "prerequisite": "Catégorie requise absente de la table"
+  },
+  "cards": {
+    "job-waiter": { "name": "Serveur", "description": "Un petit boulot pour commencer." },
+    "job-engineer": { "name": "Ingénieur", "description": "Un emploi stable et qualifié." },
+    "job-senior-engineer": { "name": "Ingénieur senior", "description": "Une promotion qui remplace le poste précédent." },
+    "relationship-marriage": { "name": "Mariage", "description": "Un engagement qui ferme la porte aux flirts." },
+    "flirt-crush": { "name": "Coup de coeur", "description": "Un début de romance, incompatible avec un mariage actif." },
+    "flirt-date": { "name": "Rendez-vous", "description": "Un rendez-vous romantique." },
+    "flirt-kiss": { "name": "Premier baiser", "description": "Un moment marquant." },
+    "bonus-infidelity": { "name": "Infidélité", "description": "Tant qu'elle est active, les flirts ignorent l'exclusion du mariage." },
+    "bonus-social-butterfly": { "name": "Papillon social", "description": "Tant qu'elle est active, le plafond de flirts est ignoré." },
+    "child-baby": { "name": "Bébé", "description": "Nécessite un mariage déjà sur la table." },
+    "education-degree": { "name": "Diplôme", "description": "Un titre qui n'a pas de plafond." },
+    "malus-rival": { "name": "Rival amoureux", "description": "Le joueur ciblé passe son prochain tour." },
+    "malus-layoff": { "name": "Licenciement", "description": "Le joueur ciblé défausse une carte." },
+    "malus-thief": { "name": "Voleur", "description": "Vole une carte au joueur ciblé." }
   }
 }

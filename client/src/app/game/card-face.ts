@@ -1,5 +1,5 @@
-import { Component, computed, input } from '@angular/core';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { Component, computed, inject, input } from '@angular/core';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { RESOURCE_KINDS, type CardDefinition } from '@happy-card-game/shared';
 import { categoryVisual, resourceVisual } from './category-visuals';
 import type { IconName } from './icon';
@@ -27,6 +27,8 @@ interface ValueBadge {
   styleUrl: './card-face.css',
 })
 export class CardFace {
+  private readonly transloco = inject(TranslocoService);
+
   readonly definition = input.required<CardDefinition>();
   readonly size = input<CardFaceSize>('tableau');
   /** A short caller-supplied note, e.g. the tableau's "Salaire max 2" / "Cumulable" line. */
@@ -35,6 +37,17 @@ export class CardFace {
   readonly selected = input<boolean>(false);
 
   protected readonly visual = computed(() => categoryVisual(this.definition().category));
+
+  /** Card display text lives in `cards.<id>.*` translation keys, not on `CardDefinition` — the engine never reads it. */
+  protected readonly name = computed(() => {
+    const lang = this.transloco.activeLang();
+    return this.transloco.translate(`cards.${this.definition().id}.name`, {}, lang);
+  });
+
+  protected readonly description = computed(() => {
+    const lang = this.transloco.activeLang();
+    return this.transloco.translate(`cards.${this.definition().id}.description`, {}, lang);
+  });
 
   /**
    * The header's value badge: the first resource this card contributes,

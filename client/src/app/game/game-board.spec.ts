@@ -107,7 +107,7 @@ describe('GameBoard', () => {
     const spy = vi.spyOn(ws, 'takeTurnAction');
     const fixture = create();
 
-    findByText(handButtons(fixture), 'Serveur').click();
+    findByText(handButtons(fixture), 'Waiter').click();
     fixture.detectChanges();
     const playButton: HTMLButtonElement = fixture.nativeElement.querySelector('app-hand .menu .btn-outline');
     const reason = fixture.nativeElement.querySelector('app-hand .reason');
@@ -129,7 +129,7 @@ describe('GameBoard', () => {
     const spy = vi.spyOn(ws, 'takeTurnAction');
     const fixture = create();
 
-    findByText(handButtons(fixture), 'Diplôme').click();
+    findByText(handButtons(fixture), 'Degree').click();
     fixture.detectChanges();
     fixture.nativeElement.querySelector('app-hand .menu .btn-outline').click();
     fixture.detectChanges();
@@ -140,8 +140,8 @@ describe('GameBoard', () => {
       targetPlayerId: undefined,
     });
     expect(handButtons(fixture).length).toBe(0);
-    expect(fixture.nativeElement.querySelector('app-tableau').textContent).toContain('Diplôme');
-    expect(fixture.nativeElement.querySelector('.played-row').textContent).toContain('Diplôme');
+    expect(fixture.nativeElement.querySelector('app-tableau').textContent).toContain('Degree');
+    expect(fixture.nativeElement.querySelector('.played-row').textContent).toContain('Degree');
     // The overlay never mutates the source of truth.
     expect(ws.gameState()).toBe(original);
   });
@@ -155,7 +155,7 @@ describe('GameBoard', () => {
       }),
     );
     const fixture = create();
-    findByText(handButtons(fixture), 'Diplôme').click();
+    findByText(handButtons(fixture), 'Degree').click();
     fixture.detectChanges();
     fixture.nativeElement.querySelector('app-hand .menu .btn-outline').click();
     fixture.detectChanges();
@@ -164,7 +164,7 @@ describe('GameBoard', () => {
     fixture.detectChanges();
 
     expect(handButtons(fixture).length).toBe(1);
-    expect(fixture.nativeElement.querySelector('app-tableau').textContent).not.toContain('Diplôme');
+    expect(fixture.nativeElement.querySelector('app-tableau').textContent).not.toContain('Degree');
     expect(fixture.nativeElement.querySelector('.error').textContent).toContain("isn't your turn");
   });
 
@@ -177,7 +177,7 @@ describe('GameBoard', () => {
       }),
     );
     const fixture = create();
-    findByText(handButtons(fixture), 'Diplôme').click();
+    findByText(handButtons(fixture), 'Degree').click();
     fixture.detectChanges();
     fixture.nativeElement.querySelector('app-hand .menu .btn-outline').click();
     fixture.detectChanges();
@@ -194,7 +194,7 @@ describe('GameBoard', () => {
     fixture.detectChanges();
 
     expect(handButtons(fixture).length).toBe(0);
-    expect(fixture.nativeElement.querySelector('app-tableau').textContent).toContain('Diplôme');
+    expect(fixture.nativeElement.querySelector('app-tableau').textContent).toContain('Degree');
     const playedSlots = fixture.nativeElement.querySelectorAll('.played-slot');
     expect(playedSlots.length).toBe(1);
   });
@@ -251,7 +251,7 @@ describe('GameBoard', () => {
     const spy = vi.spyOn(ws, 'takeTurnAction');
     const fixture = create();
 
-    findByText(handButtons(fixture), 'Rival amoureux').click();
+    findByText(handButtons(fixture), 'Love rival').click();
     fixture.detectChanges();
     const menuButtons: HTMLButtonElement[] = Array.from(fixture.nativeElement.querySelectorAll('app-hand .menu button'));
     findByText(menuButtons, 'Use malus').click();

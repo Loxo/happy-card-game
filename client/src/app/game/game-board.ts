@@ -257,10 +257,6 @@ export class GameBoard {
 
   protected readonly resourceKinds = RESOURCE_KINDS;
 
-  protected definitionName(card: CardInstance): string {
-    return getDefinition(card.definitionId).name;
-  }
-
   protected definitionFor(card: CardInstance): CardDefinition {
     return getDefinition(card.definitionId);
   }

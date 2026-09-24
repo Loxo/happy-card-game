@@ -7,6 +7,7 @@ import { canPlayCard, getDefinition, resolveUpgrade } from './table-rules';
 interface HandCardView {
   card: CardInstance;
   definition: CardDefinition;
+  name: string;
   canPlay: boolean;
   playBlockedReason: string | null;
   hasMalusEffect: boolean;
@@ -44,6 +45,7 @@ export class Hand {
       return {
         card,
         definition,
+        name: this.transloco.translate(`cards.${definition.id}.name`, {}, lang),
         canPlay: check.ok,
         playBlockedReason: check.ok ? null : this.transloco.translate(`errors.${check.reason}`, {}, lang),
         hasMalusEffect: !!definition.effect,

@@ -68,5 +68,21 @@
     "cap": "Category cap reached",
     "exclusion": "Blocked by an excluding category on the table",
     "prerequisite": "Missing a required category on the table"
+  },
+  "cards": {
+    "job-waiter": { "name": "Waiter", "description": "An entry-level job to get started." },
+    "job-engineer": { "name": "Engineer", "description": "A stable, skilled job." },
+    "job-senior-engineer": { "name": "Senior engineer", "description": "A promotion that replaces the previous job." },
+    "relationship-marriage": { "name": "Marriage", "description": "A commitment that closes the door on flirts." },
+    "flirt-crush": { "name": "Crush", "description": "The start of a romance, incompatible with an active marriage." },
+    "flirt-date": { "name": "Date", "description": "A romantic date." },
+    "flirt-kiss": { "name": "First kiss", "description": "A memorable moment." },
+    "bonus-infidelity": { "name": "Infidelity", "description": "While active, flirts ignore the marriage exclusion." },
+    "bonus-social-butterfly": { "name": "Social butterfly", "description": "While active, the flirt cap is ignored." },
+    "child-baby": { "name": "Baby", "description": "Requires a marriage already on the table." },
+    "education-degree": { "name": "Degree", "description": "A qualification with no cap." },
+    "malus-rival": { "name": "Love rival", "description": "The targeted player skips their next turn." },
+    "malus-layoff": { "name": "Layoff", "description": "The targeted player discards a card." },
+    "malus-thief": { "name": "Thief", "description": "Steals a card from the targeted player." }
   }
 }
