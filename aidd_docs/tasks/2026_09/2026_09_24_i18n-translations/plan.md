@@ -1,6 +1,6 @@
 ---
 objective: "The client renders every UX/UI string and every card's name/description in either French or English, switchable at runtime. Server-originated messages (rejection reasons, errors) are out of scope — they stay as generic English text, not treated as a translation surface."
-status: in-progress
+status: implemented
 ---
 
 # Plan: i18n translations (FR/EN)
