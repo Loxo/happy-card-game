@@ -23,6 +23,17 @@ export interface StartGameMessage {
   type: 'StartGame';
 }
 
+/** Bounds on AI opponents in a solo game — the room cap is 4 seats, one of which is the human. */
+export const MIN_BOTS = 1;
+export const MAX_BOTS = 3;
+
+/** Creates a room pre-seated with `botCount` AI opponents and starts the game immediately. */
+export interface StartSoloGameMessage {
+  type: 'StartSoloGame';
+  /** Integer within `MIN_BOTS`..`MAX_BOTS`. */
+  botCount: number;
+}
+
 /** The one action a player takes on their turn, after the server auto-draws. */
 export type TurnActionKind = 'play' | 'discard' | 'malus';
 
@@ -65,6 +76,7 @@ export type ClientToServerMessage =
   | CreateRoomMessage
   | JoinRoomMessage
   | StartGameMessage
+  | StartSoloGameMessage
   | TakeTurnActionMessage
   | LeaveRoomMessage;
 
@@ -93,6 +105,8 @@ export interface RoomStateMessage {
  */
 export interface OpponentSummary {
   playerId: string;
+  /** True for an AI-controlled seat. */
+  isBot: boolean;
   handCount: number;
   table: CardInstance[];
   resources: Record<ResourceKind, number>;
