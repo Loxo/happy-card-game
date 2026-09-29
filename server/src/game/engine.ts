@@ -55,6 +55,8 @@ export interface TakeTurnOptions {
 export interface GameEngineOptions {
   /** Injectable RNG for deterministic shuffles/draws in tests. */
   rng?: () => number;
+  /** Seats controlled by AI; only used to flag them in broadcasts. */
+  botIds?: ReadonlySet<string>;
 }
 
 /**
@@ -65,9 +67,11 @@ export interface GameEngineOptions {
 export class GameEngine {
   readonly state: GameState;
   private readonly rng: () => number;
+  private readonly botIds: ReadonlySet<string>;
 
   constructor(options: GameEngineOptions = {}) {
     this.rng = options.rng ?? Math.random;
+    this.botIds = options.botIds ?? new Set();
     this.state = {
       players: [],
       turnOrder: [],
@@ -377,6 +381,7 @@ export class GameEngine {
       .filter((seat) => seat.playerId !== playerId)
       .map((seat) => ({
         playerId: seat.playerId,
+        isBot: this.botIds.has(seat.playerId),
         handCount: seat.hand.length,
         table: seat.table,
         resources: computeResources(seat.table),
