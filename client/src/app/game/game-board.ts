@@ -132,8 +132,9 @@ export class GameBoard {
       const seatIndex = room.players.indexOf(opponent.playerId);
       return {
         opponent,
-        seatLabel:
-          seatIndex === -1
+        seatLabel: opponent.isBot
+          ? this.seatLabelFor(opponent.playerId)
+          : seatIndex === -1
             ? opponent.playerId.slice(0, 6)
             : this.transloco.translate('game.playerSeat', { index: seatIndex + 1 }, lang),
         position: SEAT_POSITIONS[index] ?? 'right',
@@ -262,6 +263,11 @@ export class GameBoard {
   }
 
   protected seatLabelFor(playerId: string): string {
+    const bots = this.gameState()?.opponents.filter((opponent) => opponent.isBot) ?? [];
+    const botIndex = bots.findIndex((bot) => bot.playerId === playerId);
+    if (botIndex !== -1) {
+      return this.transloco.translate('game.botSeat', { index: botIndex + 1 });
+    }
     const seatIndex = this.roomState()?.players.indexOf(playerId) ?? -1;
     return seatIndex === -1
       ? this.transloco.translate('game.otherPlayer')

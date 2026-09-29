@@ -9,6 +9,9 @@
     "joinRoomTitle": "Join a room",
     "roomCodeLabel": "Room code",
     "roomCodePlaceholder": "ROOM CODE",
+    "soloTitle": "Play solo",
+    "botCountLabel": "Number of AI opponents",
+    "playSolo": "Play solo",
     "join": "Join"
   },
   "room": {
@@ -33,6 +36,7 @@
     "rankingEntry": "{{label}} — {{happiness}} happiness",
     "you": "You",
     "otherPlayer": "a player",
+    "botSeat": "AI {{index}}",
     "playerSeat": "Player {{index}}",
     "gameOverStatus": "Game over.",
     "yourTurnStatus": "Your turn.",

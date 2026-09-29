@@ -7,6 +7,7 @@ import {
 import type { RoomManager } from '../rooms/roomManager.js';
 import type { Room } from '../rooms/room.js';
 import { GameEngine, type RejectionReason } from '../game/engine.js';
+import { runBotTurns } from '../game/botRunner.js';
 
 /** Per-socket state the router needs across messages: who they are, and which room (if any) they're seated in. */
 export interface ConnectionState {
@@ -56,6 +57,22 @@ function broadcastGameState(room: Room): void {
   for (const playerId of room.playerIds) {
     room.sendTo(playerId, engine.toGameStateMessage(playerId));
   }
+}
+
+/**
+ * Deals the game for every seat in `room` and broadcasts it, then hands the
+ * turn to a bot if one is up. Two distinct broadcasts, matching the user
+ * journey: the deal (5-card hands) is its own visible step, and the first
+ * turn's auto-draw (hand grows to 6) is another.
+ */
+function beginGame(roomManager: RoomManager, room: Room): void {
+  const engine = new GameEngine({ botIds: new Set(room.bots.keys()) });
+  engine.startGame(room.seatIds);
+  room.engine = engine;
+  broadcastGameState(room);
+  engine.startTurn();
+  broadcastGameState(room);
+  runBotTurns(room, broadcastGameState, roomManager.botTurns);
 }
 
 /**
@@ -123,20 +140,24 @@ export function routeMessage(
         sendMessage(ws, { type: 'ActionRejected', reason: 'Game already started' });
         return;
       }
-      if (room.playerIds.length < 2) {
+      if (room.seatIds.length < 2) {
         sendMessage(ws, { type: 'ActionRejected', reason: 'Need at least 2 players to start' });
         return;
       }
 
-      const engine = new GameEngine();
-      engine.startGame(room.playerIds);
-      room.engine = engine;
-      // Two distinct broadcasts, matching the user journey: the deal
-      // (5-card hands) is its own visible step, and the first turn's
-      // auto-draw (hand grows to 6) is another.
-      broadcastGameState(room);
-      engine.startTurn();
-      broadcastGameState(room);
+      beginGame(roomManager, room);
+      return;
+    }
+
+    case 'StartSoloGame': {
+      if (state.roomCode) {
+        sendMessage(ws, { type: 'ActionRejected', reason: 'Already in a room' });
+        return;
+      }
+      const room = roomManager.createSoloRoom(state.playerId, ws, message.botCount);
+      state.roomCode = room.code;
+      room.broadcastRoomState();
+      beginGame(roomManager, room);
       return;
     }
 
@@ -161,6 +182,7 @@ export function routeMessage(
         return;
       }
       broadcastGameState(room);
+      runBotTurns(room, broadcastGameState, roomManager.botTurns);
       return;
     }
 

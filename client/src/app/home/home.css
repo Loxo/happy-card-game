@@ -108,3 +108,32 @@ input:focus-visible {
   color: var(--color-danger-light);
   margin: 0;
 }
+
+.segmented {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.segment {
+  flex: 1;
+  padding: 0.6rem 0;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-ink);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-control);
+  cursor: pointer;
+}
+
+.segment.selected {
+  color: var(--color-primary-ink);
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.segment:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}

@@ -19,6 +19,31 @@ describe('RoomManager', () => {
     expect(room.size).toBeLessThanOrEqual(MAX_PLAYERS);
   });
 
+  it('createSoloRoom seats the human first, then the bots, and fills the room at 4 seats', () => {
+    const manager = new RoomManager();
+    const room = manager.createSoloRoom('human', fakeSocket(), 3);
+
+    expect(room.playerIds).toEqual(['human']);
+    expect(room.seatIds).toEqual(['human', 'bot-1', 'bot-2', 'bot-3']);
+    expect(room.isBot('bot-2')).toBe(true);
+    expect(room.addPlayer('extra', fakeSocket())).toBe(false);
+    expect(manager.getRoom(room.code)).toBe(room);
+  });
+
+  it('disposes a solo room, cancelling its pending bot move, when the human leaves', () => {
+    const manager = new RoomManager();
+    const ws = fakeSocket();
+    const room = manager.createSoloRoom('human', ws, 1);
+    const cancel = vi.fn();
+    room.cancelBotTurn = cancel;
+
+    manager.removeConnection(ws);
+
+    expect(cancel).toHaveBeenCalled();
+    expect(room.isDisposed).toBe(true);
+    expect(manager.roomCount).toBe(0);
+  });
+
   it('generates unique codes across many rooms', () => {
     const manager = new RoomManager();
     const codes = new Set<string>();

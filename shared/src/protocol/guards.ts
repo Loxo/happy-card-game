@@ -1,6 +1,8 @@
 import { RESOURCE_KINDS, type CardInstance, type ResourceKind } from '../cards/card.js';
-import type {
-  ActionRejectedMessage,
+import {
+  MAX_BOTS,
+  MIN_BOTS,
+  type ActionRejectedMessage,
   CardSource,
   ClientToServerMessage,
   CreateRoomMessage,
@@ -13,6 +15,7 @@ import type {
   RoomStateMessage,
   ServerToClientMessage,
   StartGameMessage,
+  StartSoloGameMessage,
   TakeTurnActionMessage,
   TurnActionKind,
 } from './messages.js';
@@ -47,6 +50,18 @@ export function isJoinRoom(value: unknown): value is JoinRoomMessage {
 
 export function isStartGame(value: unknown): value is StartGameMessage {
   return isRecord(value) && hasType(value, 'StartGame');
+}
+
+export function isStartSoloGame(value: unknown): value is StartSoloGameMessage {
+  const botCount = isRecord(value) ? value['botCount'] : undefined;
+  return (
+    isRecord(value) &&
+    hasType(value, 'StartSoloGame') &&
+    typeof botCount === 'number' &&
+    Number.isInteger(botCount) &&
+    botCount >= MIN_BOTS &&
+    botCount <= MAX_BOTS
+  );
 }
 
 const TURN_ACTION_KINDS: readonly TurnActionKind[] = ['play', 'discard', 'malus'];
@@ -88,6 +103,7 @@ export function isClientToServerMessage(value: unknown): value is ClientToServer
     isCreateRoom(value) ||
     isJoinRoom(value) ||
     isStartGame(value) ||
+    isStartSoloGame(value) ||
     isTakeTurnAction(value) ||
     isLeaveRoom(value)
   );
@@ -140,6 +156,7 @@ function isOpponentSummary(value: unknown): value is OpponentSummary {
   return (
     isRecord(value) &&
     typeof value['playerId'] === 'string' &&
+    typeof value['isBot'] === 'boolean' &&
     typeof value['handCount'] === 'number' &&
     isCardInstanceArray(value['table']) &&
     isResourceRecord(value['resources'])

@@ -9,6 +9,9 @@
     "joinRoomTitle": "Rejoindre une partie",
     "roomCodeLabel": "Code de la partie",
     "roomCodePlaceholder": "CODE DE PARTIE",
+    "soloTitle": "Jouer en solo",
+    "botCountLabel": "Nombre d'adversaires IA",
+    "playSolo": "Jouer en solo",
     "join": "Rejoindre"
   },
   "room": {
@@ -33,6 +36,7 @@
     "rankingEntry": "{{label}} — {{happiness}} bonheur",
     "you": "Vous",
     "otherPlayer": "un joueur",
+    "botSeat": "IA {{index}}",
     "playerSeat": "Joueur {{index}}",
     "gameOverStatus": "Partie terminée.",
     "yourTurnStatus": "À vous de jouer.",

@@ -1,4 +1,6 @@
 import type { WebSocket } from 'ws';
+import { createBot } from '../game/bot.js';
+import { defaultScheduler, type BotTurnOptions } from '../game/botRunner.js';
 import { Room } from './room.js';
 
 export type JoinRoomResult = { ok: true; room: Room } | { ok: false; reason: string };
@@ -20,6 +22,23 @@ interface ConnectionEntry {
 export class RoomManager {
   private readonly rooms = new Map<string, Room>();
   private readonly connections = new Map<WebSocket, ConnectionEntry>();
+
+  /** Pacing for bot moves; tests inject a synchronous scheduler. */
+  readonly botTurns: BotTurnOptions;
+
+  constructor(botTurns: Partial<BotTurnOptions> = {}) {
+    this.botTurns = { scheduler: defaultScheduler, delayMs: 1000, ...botTurns };
+  }
+
+  /** Creates a room with `playerId` as host and `botCount` AI seats. */
+  createSoloRoom(playerId: string, ws: WebSocket, botCount: number): Room {
+    const room = this.createRoom(playerId, ws);
+    for (let i = 1; i <= botCount; i += 1) {
+      const botId = `bot-${i}`;
+      room.addBot(botId, createBot(botId, { isBot: (id) => room.isBot(id) }));
+    }
+    return room;
+  }
 
   /** Creates a fresh room and seats `playerId` as its host. */
   createRoom(playerId: string, ws: WebSocket): Room {
@@ -62,6 +81,7 @@ export class RoomManager {
     }
     room.removePlayer(entry.playerId);
     if (room.isEmpty()) {
+      room.dispose();
       this.rooms.delete(entry.code);
     }
     return { room, playerId: entry.playerId };

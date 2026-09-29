@@ -1,6 +1,7 @@
 import { WebSocket } from 'ws';
 import type { RoomStateMessage, ServerToClientMessage } from '@happy-card-game/shared';
 import type { GameEngine } from '../game/engine.js';
+import type { Bot } from '../game/bot.js';
 
 /** Hard cap enforced by `Room.addPlayer` — the ruleset is 2-4 players. */
 export const MAX_PLAYERS = 4;
@@ -20,20 +21,55 @@ export class Room {
   /** Set by the router once `StartGame` is received; `undefined` before that. */
   engine: GameEngine | undefined;
 
+  /** AI seats: no socket, act through their `Bot` brain. Insertion order is turn order. */
+  readonly bots = new Map<string, Bot>();
+  /** Cancels the pending scheduled bot move, if any. */
+  cancelBotTurn: (() => void) | undefined;
+
   private readonly players = new Map<string, WebSocket>();
+  private disposed = false;
 
   constructor(code: string, hostId: string) {
     this.code = code;
     this.hostId = hostId;
   }
 
-  /** Adds a player's socket. Returns `false` (no-op) once at `MAX_PLAYERS`. */
+  /** Adds a player's socket. Returns `false` (no-op) once the room is at `MAX_PLAYERS` seats. */
   addPlayer(playerId: string, ws: WebSocket): boolean {
-    if (this.players.size >= MAX_PLAYERS) {
+    if (this.seatIds.length >= MAX_PLAYERS) {
       return false;
     }
     this.players.set(playerId, ws);
     return true;
+  }
+
+  /** Seats an AI. Returns `false` (no-op) once the room is at `MAX_PLAYERS` seats. */
+  addBot(botId: string, bot: Bot): boolean {
+    if (this.seatIds.length >= MAX_PLAYERS) {
+      return false;
+    }
+    this.bots.set(botId, bot);
+    return true;
+  }
+
+  isBot(playerId: string): boolean {
+    return this.bots.has(playerId);
+  }
+
+  /** Every seat in turn order: humans first, then bots. */
+  get seatIds(): string[] {
+    return [...this.players.keys(), ...this.bots.keys()];
+  }
+
+  /** Stops any pending bot move. Called once the room is deleted. */
+  dispose(): void {
+    this.disposed = true;
+    this.cancelBotTurn?.();
+    this.cancelBotTurn = undefined;
+  }
+
+  get isDisposed(): boolean {
+    return this.disposed;
   }
 
   /**
@@ -65,7 +101,7 @@ export class Room {
     return {
       type: 'RoomState',
       code: this.code,
-      players: this.playerIds,
+      players: this.seatIds,
       hostId: this.hostId,
       yourPlayerId,
     };

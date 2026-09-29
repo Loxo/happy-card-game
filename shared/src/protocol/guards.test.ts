@@ -10,6 +10,7 @@ import type {
   RoomStateMessage,
   ServerToClientMessage,
   StartGameMessage,
+  StartSoloGameMessage,
   TakeTurnActionMessage,
 } from './messages.js';
 import {
@@ -23,12 +24,14 @@ import {
   isRoomState,
   isServerToClientMessage,
   isStartGame,
+  isStartSoloGame,
   isTakeTurnAction,
 } from './guards.js';
 
 const validCreateRoom: CreateRoomMessage = { type: 'CreateRoom' };
 const validJoinRoom: JoinRoomMessage = { type: 'JoinRoom', code: 'ABCD' };
 const validStartGame: StartGameMessage = { type: 'StartGame' };
+const validStartSoloGame: StartSoloGameMessage = { type: 'StartSoloGame', botCount: 2 };
 const validTakeTurnActionPlay: TakeTurnActionMessage = {
   type: 'TakeTurnAction',
   cardId: 'instance-1',
@@ -75,6 +78,7 @@ const validGameState: GameStateMessage = {
   opponents: [
     {
       playerId: 'player-2',
+      isBot: false,
       handCount: 5,
       table: [{ instanceId: 'i2', definitionId: 'job-waiter' }],
       resources: { happiness: 1, education: 0, money: 2 },
@@ -109,6 +113,19 @@ describe('client -> server guards', () => {
     expect(isStartGame(validStartGame)).toBe(true);
   });
 
+  it('isStartSoloGame accepts botCount 1, 2 and 3', () => {
+    for (const botCount of [1, 2, 3]) {
+      expect(isStartSoloGame({ type: 'StartSoloGame', botCount })).toBe(true);
+    }
+  });
+
+  it('isStartSoloGame rejects an out-of-range, non-integer, non-number or missing botCount', () => {
+    for (const botCount of [0, 4, 1.5, '2', null]) {
+      expect(isStartSoloGame({ type: 'StartSoloGame', botCount })).toBe(false);
+    }
+    expect(isStartSoloGame({ type: 'StartSoloGame' })).toBe(false);
+  });
+
   it('isTakeTurnAction accepts play / discard (hand and table combo) / malus variants', () => {
     expect(isTakeTurnAction(validTakeTurnActionPlay)).toBe(true);
     expect(isTakeTurnAction(validTakeTurnActionDiscardHand)).toBe(true);
@@ -131,6 +148,7 @@ describe('client -> server guards', () => {
       validCreateRoom,
       validJoinRoom,
       validStartGame,
+      validStartSoloGame,
       validTakeTurnActionPlay,
       validLeaveRoom,
     ];
@@ -152,6 +170,11 @@ describe('server -> client guards', () => {
 
   it('isGameState rejects a malformed opponent entry or resources missing a known kind', () => {
     expect(isGameState({ ...validGameState, opponents: [{ playerId: 'p2' }] })).toBe(false);
+    const { isBot: _omit, ...withoutIsBot } = validGameState.opponents[0];
+    expect(isGameState({ ...validGameState, opponents: [withoutIsBot] })).toBe(false);
+    expect(
+      isGameState({ ...validGameState, opponents: [{ ...validGameState.opponents[0], isBot: 'yes' }] }),
+    ).toBe(false);
     expect(isGameState({ ...validGameState, resources: {} })).toBe(false);
     expect(isGameState({ ...validGameState, hand: [{ instanceId: 'i1' }] })).toBe(false);
     expect(isGameState({ ...validGameState, playedCards: [{ playerId: 'p1' }] })).toBe(false);

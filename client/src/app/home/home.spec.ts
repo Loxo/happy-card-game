@@ -17,7 +17,10 @@ describe('Home', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Home, provideTranslocoTesting()],
-      providers: [provideRouter([{ path: 'room/:code', component: RoomStub }])],
+      providers: [provideRouter([
+        { path: 'room/:code', component: RoomStub },
+        { path: 'room/:code/play', component: RoomStub },
+      ])],
     }).compileComponents();
 
     router = TestBed.inject(Router);
@@ -74,6 +77,51 @@ describe('Home', () => {
     await fixture.whenStable();
 
     expect(navigateSpy).toHaveBeenCalledWith(['/room', 'WXYZ1']);
+  });
+
+  it('starts a solo game with the selected AI count (default 1)', () => {
+    const spy = vi.spyOn(ws, 'startSolo').mockImplementation(() => {});
+    const fixture = create();
+    const solo: HTMLButtonElement = fixture.nativeElement.querySelector('.btn-solo');
+
+    solo.click();
+    expect(spy).toHaveBeenLastCalledWith(1);
+
+    const segments: HTMLButtonElement[] = Array.from(fixture.nativeElement.querySelectorAll('.segment'));
+    segments[2].click();
+    fixture.detectChanges();
+    solo.click();
+
+    expect(spy).toHaveBeenLastCalledWith(3);
+    expect(segments[2].getAttribute('aria-checked')).toBe('true');
+  });
+
+  it('goes straight to the board when a solo GameState accompanies the RoomState', async () => {
+    const navigateSpy = vi.spyOn(router, 'navigate');
+    const fixture = create();
+
+    ws.gameState.set({
+      type: 'GameState',
+      hand: [],
+      table: [],
+      playedCards: [],
+      turnPlayerId: 'p1',
+      roundsRemaining: 10,
+      deckCount: 30,
+      resources: { happiness: 0, education: 0, money: 0 },
+      opponents: [],
+    });
+    ws.roomState.set({
+      type: 'RoomState',
+      code: 'WXYZ1',
+      players: ['p1', 'bot-1'],
+      hostId: 'p1',
+      yourPlayerId: 'p1',
+    } satisfies RoomStateMessage);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/room', 'WXYZ1', 'play']);
   });
 
   it('shows the rejection reason and disables actions while connecting', () => {
