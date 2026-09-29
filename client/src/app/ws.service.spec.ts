@@ -83,6 +83,14 @@ describe('WsService', () => {
     expect(socket().sent).toEqual([JSON.stringify({ type: 'CreateRoom' })]);
   });
 
+  it('sends StartSoloGame with the bot count', () => {
+    const ws = service();
+    ws.startSolo(3);
+    socket().emitOpen();
+
+    expect(socket().sent).toEqual([JSON.stringify({ type: 'StartSoloGame', botCount: 3 })]);
+  });
+
   it('reuses the open socket for a later send instead of reconnecting', () => {
     const ws = service();
     ws.createRoom();

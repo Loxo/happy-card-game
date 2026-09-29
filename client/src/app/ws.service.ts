@@ -40,6 +40,10 @@ export class WsService {
     this.send({ type: 'JoinRoom', code });
   }
 
+  startSolo(botCount: number): void {
+    this.send({ type: 'StartSoloGame', botCount });
+  }
+
   startGame(): void {
     this.send({ type: 'StartGame' });
   }

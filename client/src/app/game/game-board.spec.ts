@@ -87,7 +87,7 @@ describe('GameBoard', () => {
       state({
         opponents: players
           .filter((id) => id !== ME)
-          .map((playerId) => ({ playerId, handCount: 5, table: [], resources: { happiness: 0, education: 0, money: 0 } })),
+          .map((playerId) => ({ playerId, isBot: false, handCount: 5, table: [], resources: { happiness: 0, education: 0, money: 0 } })),
       }),
     );
     const fixture = create();
@@ -101,7 +101,7 @@ describe('GameBoard', () => {
       state({
         table: [card('t1', 'job-waiter')],
         hand: [card('h1', 'job-waiter'), card('h2', 'education-degree')],
-        opponents: [{ playerId: OPP, handCount: 5, table: [], resources: { happiness: 0, education: 0, money: 0 } }],
+        opponents: [{ playerId: OPP, isBot: false, handCount: 5, table: [], resources: { happiness: 0, education: 0, money: 0 } }],
       }),
     );
     const spy = vi.spyOn(ws, 'takeTurnAction');
@@ -123,7 +123,7 @@ describe('GameBoard', () => {
     ws.roomState.set(room([ME, OPP]));
     const original = state({
       hand: [card('h1', 'education-degree')],
-      opponents: [{ playerId: OPP, handCount: 5, table: [], resources: { happiness: 0, education: 0, money: 0 } }],
+      opponents: [{ playerId: OPP, isBot: false, handCount: 5, table: [], resources: { happiness: 0, education: 0, money: 0 } }],
     });
     ws.gameState.set(original);
     const spy = vi.spyOn(ws, 'takeTurnAction');
@@ -151,7 +151,7 @@ describe('GameBoard', () => {
     ws.gameState.set(
       state({
         hand: [card('h1', 'education-degree')],
-        opponents: [{ playerId: OPP, handCount: 5, table: [], resources: { happiness: 0, education: 0, money: 0 } }],
+        opponents: [{ playerId: OPP, isBot: false, handCount: 5, table: [], resources: { happiness: 0, education: 0, money: 0 } }],
       }),
     );
     const fixture = create();
@@ -173,7 +173,7 @@ describe('GameBoard', () => {
     ws.gameState.set(
       state({
         hand: [card('h1', 'education-degree')],
-        opponents: [{ playerId: OPP, handCount: 5, table: [], resources: { happiness: 0, education: 0, money: 0 } }],
+        opponents: [{ playerId: OPP, isBot: false, handCount: 5, table: [], resources: { happiness: 0, education: 0, money: 0 } }],
       }),
     );
     const fixture = create();
@@ -188,7 +188,7 @@ describe('GameBoard', () => {
         table: [card('h1', 'education-degree')],
         playedCards: [{ playerId: ME, card: card('h1', 'education-degree') }],
         turnPlayerId: OPP,
-        opponents: [{ playerId: OPP, handCount: 6, table: [], resources: { happiness: 0, education: 0, money: 0 } }],
+        opponents: [{ playerId: OPP, isBot: false, handCount: 6, table: [], resources: { happiness: 0, education: 0, money: 0 } }],
       }),
     );
     fixture.detectChanges();
@@ -205,8 +205,8 @@ describe('GameBoard', () => {
       state({
         turnPlayerId: ME,
         opponents: [
-          { playerId: OPP, handCount: 5, table: [], resources: { happiness: 0, education: 0, money: 0 } },
-          { playerId: OPP2, handCount: 5, table: [], resources: { happiness: 0, education: 0, money: 0 } },
+          { playerId: OPP, isBot: false, handCount: 5, table: [], resources: { happiness: 0, education: 0, money: 0 } },
+          { playerId: OPP2, isBot: false, handCount: 5, table: [], resources: { happiness: 0, education: 0, money: 0 } },
         ],
       }),
     );
@@ -222,7 +222,7 @@ describe('GameBoard', () => {
     ws.roomState.set(room([ME, OPP]));
     ws.gameState.set(
       state({
-        opponents: [{ playerId: OPP, handCount: 0, table: [], resources: { happiness: 0, education: 0, money: 0 } }],
+        opponents: [{ playerId: OPP, isBot: false, handCount: 0, table: [], resources: { happiness: 0, education: 0, money: 0 } }],
         result: {
           rankings: [
             { playerId: ME, happiness: 5 },
@@ -240,12 +240,34 @@ describe('GameBoard', () => {
     expect(text).toContain('2');
   });
 
+  it('labels AI seats "AI n" and never shows them as disconnected', () => {
+    ws.roomState.set(room([ME, 'bot-1', 'bot-2']));
+    ws.gameState.set(
+      state({
+        opponents: ['bot-1', 'bot-2'].map((playerId) => ({
+          playerId,
+          isBot: true,
+          handCount: 5,
+          table: [],
+          resources: { happiness: 0, education: 0, money: 0 },
+        })),
+      }),
+    );
+    const fixture = create();
+
+    const labels = Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('app-opponent-seat .seat-label')).map(
+      (el) => el.textContent?.trim(),
+    );
+    expect(labels).toEqual(['AI 1', 'AI 2']);
+    expect(fixture.nativeElement.querySelector('.badge-disconnected')).toBeNull();
+  });
+
   it('use-malus prompts an opponent target, then sends the action against the picked seat', () => {
     ws.roomState.set(room([ME, OPP]));
     ws.gameState.set(
       state({
         hand: [card('m1', 'malus-rival')],
-        opponents: [{ playerId: OPP, handCount: 5, table: [], resources: { happiness: 0, education: 0, money: 0 } }],
+        opponents: [{ playerId: OPP, isBot: false, handCount: 5, table: [], resources: { happiness: 0, education: 0, money: 0 } }],
       }),
     );
     const spy = vi.spyOn(ws, 'takeTurnAction');
@@ -274,7 +296,7 @@ describe('GameBoard', () => {
       state({
         table: [card('t1', 'job-waiter')],
         hand: [card('h1', 'education-degree')],
-        opponents: [{ playerId: OPP, handCount: 5, table: [], resources: { happiness: 0, education: 0, money: 0 } }],
+        opponents: [{ playerId: OPP, isBot: false, handCount: 5, table: [], resources: { happiness: 0, education: 0, money: 0 } }],
       }),
     );
     const spy = vi.spyOn(ws, 'takeTurnAction');

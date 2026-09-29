@@ -30,6 +30,27 @@
     </form>
   </section>
 
+  <section class="card">
+    <h2>{{ 'home.soloTitle' | transloco }}</h2>
+    <div class="segmented" role="radiogroup" [attr.aria-label]="'home.botCountLabel' | transloco">
+      @for (count of botCountOptions; track count) {
+        <button
+          type="button"
+          role="radio"
+          class="segment"
+          [class.selected]="botCount() === count"
+          [attr.aria-checked]="botCount() === count"
+          (click)="botCount.set(count)"
+        >
+          {{ count }}
+        </button>
+      }
+    </div>
+    <button type="button" class="btn btn-primary btn-solo" (click)="startSolo()" [disabled]="status() === 'connecting'">
+      {{ 'home.playSolo' | transloco }}
+    </button>
+  </section>
+
   @if (rejectedReason()) {
     <p class="error" role="alert">{{ rejectedReason() }}</p>
   }
